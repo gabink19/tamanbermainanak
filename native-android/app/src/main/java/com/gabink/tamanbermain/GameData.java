@@ -146,6 +146,36 @@ public class GameData {
         LINES.put("roket_meluncur", "Meluncur ke luar angkasa! Wuuush!");
         LINES.put("panen_intro", "Ayo panen sayur! Ketuk sayurnya untuk masuk ke kotak!");
         LINES.put("panen_done", "Wah, panennya banyak sekali! Kamu hebat!");
+        LINES.put("profesi_intro", "Siapa naik apa, ya? Ayo, bantu mereka naik kendaraannya!");
+        LINES.put("sortir_buahsayur", "Buah masuk ke kotak buah. Sayur masuk ke kotak sayur, ya!");
+        LINES.put("besarkecil_intro", "Yang besar masuk kotak besar. Yang kecil masuk kotak kecil, ya!");
+        LINES.put("besar", "Yang ini besar!");
+        LINES.put("kecil", "Yang ini kecil!");
+        LINES.put("rumah_intro", "Ayo, antar hewan ke rumahnya! Ada laut, peternakan, dan hutan.");
+        LINES.put("bayangan_intro", "Ayo, cari bayangannya! Cocokkan gambarnya, ya.");
+        LINES.put("bentuk_intro", "Ayo, masukkan bentuknya ke lubang yang pas!");
+        LINES.put("pelangi_intro", "Ayo susun warna pelangi! Merah, oranye, kuning, hijau, biru, dan ungu!");
+        LINES.put("pelangi_done", "Wah, pelanginya indah sekali!");
+        LINES.put("puzzle_intro", "Ayo, susun puzzlenya!");
+        LINES.put("puzzle_done", "Yeay! Gambarnya sudah jadi!");
+        LINES.put("jalan_intro", "Ayo, antar sampai ke tujuan!");
+        LINES.put("jalan_done", "Yeay, sudah sampai!");
+        LINES.put("dokter_intro", "Kita jadi dokter hewan, yuk!");
+        LINES.put("dandan_intro", "Ayo, kita dandani teman kita!");
+        LINES.put("dandan_done", "Wah, sekarang jadi keren sekali!");
+        LINES.put("mandi_intro", "Wah, kotor sekali! Ayo, gosok sampai bersih!");
+        LINES.put("mandi_done", "Wah, sudah bersih dan wangi!");
+        LINES.put("gigi_intro", "Ih, ada kuman di gigi! Ayo, sikat giginya sampai bersih!");
+        LINES.put("gigi_done", "Wah, giginya bersih dan berkilau! Senyum, dong!");
+        LINES.put("kue_intro", "Hari ini ada yang ulang tahun! Ayo, pasang lilinnya di atas kue!");
+        LINES.put("kue_tiup", "Selamat ulang tahun! Ayo, tiup lilinnya!");
+        LINES.put("kue_done", "Horee! Selamat ulang tahun!");
+        LINES.put("kereta_intro", "Ayo, bantu hewan-hewan naik kereta api!");
+        LINES.put("kereta_done", "Semua sudah naik. Kereta berangkat! Tut, tut, tuuut!");
+        LINES.put("warnai_intro", "Pilih warnanya dulu, lalu ketuk gambarnya, ya!");
+        LINES.put("warnai_done", "Wah, gambarnya cantik sekali!");
+        LINES.put("pancing_intro", "Ayo memancing! Ketuk ikannya, ya!");
+        LINES.put("pancing_done", "Wah, dapat lima ikan! Hebat!");
 
         for (Item it : ITEMS.values()) {
             LINES.put("n_" + it.key, "Ini " + it.name.toLowerCase() + "!");
@@ -181,6 +211,23 @@ public class GameData {
         addGame("es", "🍦", "Buat Es Krim", "Pilih rasa, topping, lalu makan", 1, false);
         addGame("pasangan", "🃏", "Kartu Kembar", "Cari dua gambar yang sama", 0, false);
         addGame("hitung", "🍎", "Hitung Buah", "Petik buah sesuai angka", 0, false);
+        addGame("profesi", "🚒", "Siapa Naik Apa?", "Cocokkan profesi dan kendaraannya", 0, false);
+        addGame("sortir", "📦", "Masukkan ke Kotak", "Pilah buah dan sayur", 0, false);
+        addGame("besarkecil", "🧸", "Besar dan Kecil", "Pilah yang besar dan kecil", 0, false);
+        addGame("rumah", "🏡", "Rumah Hewan", "Laut, peternakan, atau hutan?", 0, false);
+        addGame("bayangan", "🦒", "Cari Bayangan", "Cocokkan dengan bayangannya", 0, false);
+        addGame("bentuk", "🔷", "Bentuk dan Lubang", "Masukkan bentuk ke lubangnya", 0, false);
+        addGame("pelangi", "🌈", "Susun Pelangi", "Susun warna pelangi yang indah", 0, false);
+        addGame("puzzle", "🧩", "Puzzle", "Susun potongan gambar", 0, false);
+        addGame("jalan", "🛣️", "Antar Sampai Tujuan", "Ikuti jalan sampai tujuan", 0, false);
+        addGame("dokter", "🩺", "Dokter Hewan", "Obati hewan yang sakit", 1, false);
+        addGame("dandan", "🎩", "Dandani Teman", "Pakaikan topi dan kacamata", 1, false);
+        addGame("mandi", "🛁", "Mandikan Hewan", "Gosok lumpurnya sampai bersih", 1, false);
+        addGame("gigi", "🦷", "Sikat Gigi", "Sikat kuman sampai bersih", 1, false);
+        addGame("kue", "🎂", "Kue Ulang Tahun", "Pasang lilin, lalu tiup", 1, false);
+        addGame("kereta", "🚂", "Kereta Hewan", "Naikkan hewan ke gerbong", 1, false);
+        addGame("warnai", "🖍️", "Mewarnai", "Ketuk untuk mewarnai rumah", 1, false);
+        addGame("pancing", "🎣", "Memancing", "Tangkap lima ikan", 2, false);
 
         for (GameDef g : GAMES) {
             LINES.put("g_" + g.id, "Yuk, main " + g.name.toLowerCase() + "!");

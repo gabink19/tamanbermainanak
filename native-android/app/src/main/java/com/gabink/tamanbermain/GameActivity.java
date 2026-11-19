@@ -130,6 +130,23 @@ public class GameActivity extends AppCompatActivity implements BaseGameView.Host
             case "es": return new GamesPack2.EsKrimGame(this, this);
             case "pasangan": return new GamesPack2.PasanganGame(this, this);
             case "hitung": return new GamesPack2.HitungGame(this, this);
+            case "profesi": return new GamesPack3.ProfesiGame(this, this);
+            case "sortir": return new GamesPack3.SortirGame(this, this);
+            case "besarkecil": return new GamesPack3.BesarKecilGame(this, this);
+            case "rumah": return new GamesPack3.RumahGame(this, this);
+            case "bayangan": return new GamesPack3.BayanganGame(this, this);
+            case "bentuk": return new GamesPack3.BentukGame(this, this);
+            case "pelangi": return new GamesPack3.PelangiGame(this, this);
+            case "puzzle": return new GamesPack3.PuzzleGame(this, this);
+            case "jalan": return new GamesPack3.JalanGame(this, this);
+            case "dokter": return new GamesPack4.DokterGame(this, this);
+            case "dandan": return new GamesPack4.DandanGame(this, this);
+            case "mandi": return new GamesPack4.MandiGame(this, this);
+            case "gigi": return new GamesPack4.GigiGame(this, this);
+            case "kue": return new GamesPack4.KueGame(this, this);
+            case "kereta": return new GamesPack4.KeretaGame(this, this);
+            case "warnai": return new GamesPack4.WarnaiGame(this, this);
+            case "pancing": return new GamesPack4.PancingGame(this, this);
             default: return new GamesPack1.BalonGame(this, this);
         }
     }

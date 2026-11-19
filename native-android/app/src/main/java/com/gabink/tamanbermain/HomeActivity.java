@@ -36,14 +36,10 @@ public class HomeActivity extends AppCompatActivity {
         sfx = SoundManager.get(this);
 
         FrameLayout root = new FrameLayout(this);
-        root.setBackgroundColor(0xFF7FD0FF);
-
-        // Sunny hill background
-        View hill = new View(this);
-        hill.setBackgroundColor(0xFF8FD76A);
-        FrameLayout.LayoutParams hillLp = new FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT, UiHelper.dp(this, 220), Gravity.BOTTOM);
-        root.addView(hill, hillLp);
+        particles = new ParticleView(this);
+        PlaygroundViews.PlaygroundBgView bg = new PlaygroundViews.PlaygroundBgView(this, particles, sfx);
+        root.addView(bg, new FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
         ScrollView scroll = new ScrollView(this);
         LinearLayout content = new LinearLayout(this);
@@ -53,19 +49,16 @@ public class HomeActivity extends AppCompatActivity {
         scroll.addView(content);
         root.addView(scroll);
 
-        particles = new ParticleView(this);
         root.addView(particles, new FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
-        // Hero: Cici + Title
+        // Hero: Custom-drawn animated Cici + Title
         LinearLayout hero = new LinearLayout(this);
         hero.setOrientation(LinearLayout.HORIZONTAL);
         hero.setGravity(Gravity.CENTER_VERTICAL);
-        TextView cici = new TextView(this);
-        cici.setText("🐥");
-        cici.setTextSize(54);
-        cici.setPadding(0, 0, UiHelper.dp(this, 10), 0);
-        hero.addView(cici);
+        PlaygroundViews.CiciView cici = new PlaygroundViews.CiciView(this);
+        int ciciSz = UiHelper.dp(this, 96);
+        hero.addView(cici, new LinearLayout.LayoutParams(ciciSz, ciciSz));
 
         LinearLayout heroText = new LinearLayout(this);
         heroText.setOrientation(LinearLayout.VERTICAL);
@@ -96,6 +89,7 @@ public class HomeActivity extends AppCompatActivity {
         };
         cici.setOnClickListener(v -> {
             UiHelper.bounce(cici);
+            cici.wave();
             sfx.boing();
             String[] pair = ciciLines[ciciIdx++ % ciciLines.length];
             sayBubble.setText(pair[1]);
@@ -224,11 +218,13 @@ public class HomeActivity extends AppCompatActivity {
             grid.addView(empty, glp);
             return;
         }
+        int tileIdx = 0;
         for (GameData.GameDef g : list) {
             FrameLayout card = new FrameLayout(this);
-            card.setBackground(UiHelper.toyBox(this, g.color, 24, 3));
+            card.setBackground(UiHelper.toyBox3D(this, g.color, 26, 3, 6));
+            card.setRotation((tileIdx++ % 2 == 0) ? -1.3f : 1.3f);
             int cp = UiHelper.dp(this, 10);
-            card.setPadding(cp, cp, cp, cp);
+            card.setPadding(cp, cp, cp, UiHelper.dp(this, 14));
 
             LinearLayout inner = new LinearLayout(this);
             inner.setOrientation(LinearLayout.VERTICAL);
@@ -236,10 +232,14 @@ public class HomeActivity extends AppCompatActivity {
 
             TextView ico = new TextView(this);
             ico.setText(g.icon);
-            ico.setTextSize(42);
+            ico.setTextSize(38);
             ico.setGravity(Gravity.CENTER);
-            ico.setPadding(0, UiHelper.dp(this, 6), 0, UiHelper.dp(this, 4));
-            inner.addView(ico);
+            ico.setBackground(UiHelper.toyBox(this, 0xFFFFF8E8, 99, 3));
+            int badgeSz = UiHelper.dp(this, 78);
+            LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(badgeSz, badgeSz);
+            ilp.topMargin = UiHelper.dp(this, 4);
+            ilp.bottomMargin = UiHelper.dp(this, 6);
+            inner.addView(ico, ilp);
 
             TextView name = new TextView(this);
             name.setText(g.name);

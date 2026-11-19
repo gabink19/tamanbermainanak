@@ -57,19 +57,16 @@ public class GamesPack1 {
             spawned++;
             boolean rainbow = (spawned % 5 == 0);
             int idx = rnd.nextInt(colNames.length);
-            int sz = UiHelper.dp(getContext(), 76 + rnd.nextInt(26));
+            int w = UiHelper.dp(getContext(), 78 + rnd.nextInt(24));
+            int h = Math.round(w * 1.35f);
 
-            TextView b = new TextView(getContext());
-            b.setText(rainbow ? "🌈" : "🎈");
-            b.setTextSize(46);
-            b.setGravity(Gravity.CENTER);
-            b.setBackground(UiHelper.toyBox(getContext(), rainbow ? 0xFFFFD23F : colVals[idx], 99, 3));
-            LayoutParams lp = new LayoutParams(sz, sz);
-            b.setX(rnd.nextInt(Math.max(1, getWidth() - sz)));
-            b.setY(getHeight() + sz);
+            PlaygroundViews.BalloonView b = new PlaygroundViews.BalloonView(getContext(), colVals[idx], rainbow);
+            LayoutParams lp = new LayoutParams(w, h);
+            b.setX(rnd.nextInt(Math.max(1, getWidth() - w)));
+            b.setY(getHeight() + h);
             addView(b, lp);
 
-            ObjectAnimator anim = ObjectAnimator.ofFloat(b, "y", getHeight() + sz, -sz * 1.5f);
+            ObjectAnimator anim = ObjectAnimator.ofFloat(b, "y", getHeight() + h, -h * 1.2f);
             anim.setDuration(4800 + rnd.nextInt(2200));
             anim.setInterpolator(new LinearInterpolator());
             anim.addListener(new AnimatorListenerAdapter() {
