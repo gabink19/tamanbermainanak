@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -87,11 +88,12 @@ public class GamesPack3 {
             List<Integer> botSel = new ArrayList<>(sel);
             Collections.shuffle(botSel);
             for (int i : botSel) {
-                TextView cv = new TextView(getContext());
-                cv.setText(jobs[i][4]);
-                cv.setTextSize(46);
-                cv.setGravity(Gravity.CENTER);
+                FrameLayout cv = new FrameLayout(getContext());
                 cv.setBackground(UiHelper.toyBox3D(getContext(), 0xFF4CC9F0, 22, 3, 5));
+                int pad = UiHelper.dp(getContext(), 10);
+                cv.setPadding(pad, pad, pad, pad);
+                SpriteView sv = new SpriteView(getContext(), jobs[i][3]);
+                cv.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 100);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
@@ -424,15 +426,15 @@ public class GamesPack3 {
             itRow.setGravity(Gravity.CENTER);
             itRow.setPadding(0, UiHelper.dp(getContext(), 34), 0, 0);
 
-            List<TextView> itemTvs = new ArrayList<>();
+            List<FrameLayout> itemTvs = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
                 final int idx = i;
                 GameData.Item it = GameData.ITEMS.get(sel.get(i));
-                TextView tv = new TextView(getContext());
-                tv.setText(it.emoji);
-                tv.setTextSize(48);
-                tv.setGravity(Gravity.CENTER);
+                FrameLayout tv = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), 8);
+                tv.setPadding(pad, pad, pad, pad);
                 tv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFFFF, 22, 3, 5));
+                tv.addView(new SpriteView(getContext(), it.key), new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 92);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
@@ -452,13 +454,13 @@ public class GamesPack3 {
             Collections.shuffle(shOrder);
             for (int i : shOrder) {
                 GameData.Item it = GameData.ITEMS.get(sel.get(i));
-                TextView sv = new TextView(getContext());
-                sv.setText("❓\n" + it.name);
-                sv.setTextSize(17);
-                sv.setTextColor(0xFF2A2140);
-                sv.setTypeface(null, Typeface.BOLD);
-                sv.setGravity(Gravity.CENTER);
+                FrameLayout sv = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), 8);
+                sv.setPadding(pad, pad, pad, pad);
                 sv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFD0C9C0, 22, 3, 5));
+                SpriteView silSp = new SpriteView(getContext(), it.key);
+                silSp.setSilhouette(true);
+                sv.addView(silSp, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 96);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
@@ -466,8 +468,7 @@ public class GamesPack3 {
                     if (picked < 0 || sv.getTag() != null) return;
                     if (picked == i) {
                         sv.setTag("ok");
-                        sv.setText(it.emoji);
-                        sv.setTextSize(46);
+                        silSp.setSilhouette(false);
                         sv.setBackground(UiHelper.toyBox3D(getContext(), 0xFF6CC56F, 22, 3, 5));
                         itemTvs.get(picked).setVisibility(INVISIBLE);
                         picked = -1; left--;

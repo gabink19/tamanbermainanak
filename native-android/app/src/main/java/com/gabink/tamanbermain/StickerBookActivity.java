@@ -134,13 +134,14 @@ public class StickerBookActivity extends AppCompatActivity {
         for (GameData.Item it : GameData.ITEMS.values()) {
             if (!"all".equals(cat) && !it.cat.equals(cat)) continue;
             boolean have = owned.containsKey(it.key) && owned.get(it.key) > 0;
-            TextView cell = new TextView(this);
-            cell.setText(have ? it.emoji : "❔");
-            cell.setTextSize(34);
-            cell.setGravity(Gravity.CENTER);
-            cell.setPadding(0, UiHelper.dp(this, 12), 0, UiHelper.dp(this, 12));
+            FrameLayout cell = new FrameLayout(this);
+            int pad = UiHelper.dp(this, 8);
+            cell.setPadding(pad, pad, pad, pad);
             cell.setBackground(UiHelper.toyBox(this, have ? 0xFFFFFFFF : 0x66FFFFFF, 99, have ? 3 : 1));
-            cell.setAlpha(have ? 1f : 0.4f);
+            SpriteView sv = new SpriteView(this, it.key);
+            sv.setSilhouette(!have);
+            cell.addView(sv, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, UiHelper.dp(this, 64)));
             cell.setOnClickListener(v -> {
                 if (have) {
                     UiHelper.bounce(cell);
@@ -149,6 +150,7 @@ public class StickerBookActivity extends AppCompatActivity {
                     sfx.playVoice(GameData.LINES.containsKey("ada_" + it.key) ? "ada_" + it.key : "n_" + it.key);
                     particles.burst(cell.getX() + cell.getWidth() / 2f, cell.getY() + cell.getHeight() / 2f, null, 14);
                 } else {
+                    UiHelper.shake(cell);
                     sfx.wrong();
                 }
             });

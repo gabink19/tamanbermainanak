@@ -230,16 +230,19 @@ public class HomeActivity extends AppCompatActivity {
             inner.setOrientation(LinearLayout.VERTICAL);
             inner.setGravity(Gravity.CENTER_HORIZONTAL);
 
-            TextView ico = new TextView(this);
-            ico.setText(g.icon);
-            ico.setTextSize(38);
-            ico.setGravity(Gravity.CENTER);
-            ico.setBackground(UiHelper.toyBox(this, 0xFFFFF8E8, 99, 3));
-            int badgeSz = UiHelper.dp(this, 78);
+            FrameLayout badge = new FrameLayout(this);
+            badge.setBackground(UiHelper.toyBox(this, 0xFFFFF8E8, 99, 3));
+            SpriteView sprite = new SpriteView(this, spriteForGame(g.id));
+            if ("bayangan".equals(g.id)) sprite.setSilhouette(true);
+            int spPad = UiHelper.dp(this, 10);
+            badge.setPadding(spPad, spPad, spPad, spPad);
+            badge.addView(sprite, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            int badgeSz = UiHelper.dp(this, 82);
             LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(badgeSz, badgeSz);
             ilp.topMargin = UiHelper.dp(this, 4);
             ilp.bottomMargin = UiHelper.dp(this, 6);
-            inner.addView(ico, ilp);
+            inner.addView(badge, ilp);
 
             TextView name = new TextView(this);
             name.setText(g.name);
@@ -286,6 +289,44 @@ public class HomeActivity extends AppCompatActivity {
             int m = UiHelper.dp(this, 6);
             glp.setMargins(m, m, m, m);
             grid.addView(card, glp);
+        }
+    }
+
+    private String spriteForGame(String id) {
+        switch (id) {
+            case "profesi": return "pemadam";
+            case "panen": return "wortel";
+            case "sortir": return "apel";
+            case "makan": return "kelinci";
+            case "dokter": return "kucing";
+            case "dandan": return "panda";
+            case "kereta": return "kereta";
+            case "jalan": return "mobil";
+            case "kue": return "stroberi";
+            case "hitung": return "jeruk";
+            case "bentuk": return "anakayam";
+            case "besarkecil": return "beruang";
+            case "rumah": return "sapi";
+            case "bayangan": return "gajah";
+            case "puzzle": return "singa";
+            case "mandi": return "anjing";
+            case "gigi": return "harimau";
+            case "pancing": return "ikan";
+            case "pasangan": return "katak";
+            case "warnai": return "bebek";
+            case "balon": return "monyet";
+            case "gelembung": return "ikanhias";
+            case "kembang": return "roket";
+            case "piano": return "pesawat";
+            case "musik": return "bus";
+            case "cilukba": return "domba";
+            case "telepon": return "tikus";
+            case "tangkap": return "paus";
+            case "es": return "semangka";
+            case "sembunyi": return "kurakura";
+            case "pelangi": return "gurita";
+            case "roket": return "roket";
+            default: return "kucing";
         }
     }
 

@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -190,17 +191,15 @@ public class GamesPack2 {
             col.setOrientation(LinearLayout.VERTICAL);
             col.setGravity(Gravity.CENTER);
 
-            TextView aniView = new TextView(getContext());
-            aniView.setText(ani.emoji);
-            aniView.setTextSize(108);
-            aniView.setGravity(Gravity.CENTER);
+            SpriteView aniView = new SpriteView(getContext(), curAnimal);
+            int aniSz = UiHelper.dp(getContext(), 170);
             aniView.setOnClickListener(v -> {
                 UiHelper.bounce(aniView);
                 host.sfx().playReal(curAnimal);
                 host.sfx().playVoice("ada_" + curAnimal);
                 burstView(aniView, null, 14);
             });
-            col.addView(aniView);
+            col.addView(aniView, new LinearLayout.LayoutParams(aniSz, aniSz));
 
             List<String> allFoods = new ArrayList<>(GameData.FOODS.keySet());
             allFoods.remove(goodFood);
@@ -217,11 +216,13 @@ public class GamesPack2 {
             row.setPadding(0, UiHelper.dp(getContext(), 28), 0, 0);
 
             for (String fk : opts) {
-                Button fb = new Button(getContext());
-                fb.setText(GameData.FOODS.get(fk));
-                fb.setTextSize(42);
-                fb.setBackground(UiHelper.toyBox(getContext(), 0xFFFFFAF0, 24, 3));
-                int sz = UiHelper.dp(getContext(), 88);
+                FrameLayout fb = new FrameLayout(getContext());
+                fb.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFAF0, 24, 3, 5));
+                int pad = UiHelper.dp(getContext(), 10);
+                fb.setPadding(pad, pad, pad, pad);
+                SpriteView fsv = new SpriteView(getContext(), fk);
+                fb.addView(fsv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                int sz = UiHelper.dp(getContext(), 92);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
                 fb.setOnClickListener(v -> {
@@ -233,6 +234,7 @@ public class GamesPack2 {
                         burstView(aniView, null, 28);
                         handler.postDelayed(() -> host.celebrate(this::nextRound, null), 1200);
                     } else {
+                        UiHelper.shake(fb);
                         host.sfx().wrong();
                         host.sfx().playVoice("ups");
                     }
@@ -281,13 +283,18 @@ public class GamesPack2 {
 
             for (int i = 0; i < n; i++) {
                 GameData.Item it = vegs.get(i);
-                TextView tv = new TextView(getContext());
-                tv.setText(it.emoji);
-                tv.setTextSize(54);
-                tv.setPadding(UiHelper.dp(getContext(), 10), UiHelper.dp(getContext(), 10), UiHelper.dp(getContext(), 10), UiHelper.dp(getContext(), 10));
-                tv.setOnClickListener(v -> {
-                    if (tv.getVisibility() != VISIBLE) return;
-                    tv.setVisibility(INVISIBLE);
+                FrameLayout fv = new FrameLayout(getContext());
+                fv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFAF0, 20, 3, 4));
+                int pad = UiHelper.dp(getContext(), 8);
+                fv.setPadding(pad, pad, pad, pad);
+                SpriteView sv = new SpriteView(getContext(), it.key);
+                fv.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                int vsz = UiHelper.dp(getContext(), 74);
+                LinearLayout.LayoutParams vlp = new LinearLayout.LayoutParams(vsz, vsz);
+                vlp.setMargins(UiHelper.dp(getContext(), 5), 0, UiHelper.dp(getContext(), 5), 0);
+                fv.setOnClickListener(v -> {
+                    if (fv.getVisibility() != VISIBLE) return;
+                    fv.setVisibility(INVISIBLE);
                     host.sfx().pop();
                     host.sfx().playVoice("n_" + it.key);
                     UiHelper.bounce(crate);
@@ -297,7 +304,7 @@ public class GamesPack2 {
                         handler.postDelayed(() -> host.celebrate(this::nextRound, "panen_done"), 700);
                     }
                 });
-                row.addView(tv);
+                row.addView(fv, vlp);
             }
 
             col.addView(row);
