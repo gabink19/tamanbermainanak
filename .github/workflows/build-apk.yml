@@ -1,9 +1,12 @@
-name: Build Android APK
+name: Build Android APK & Release
 
 on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-apk:
@@ -23,22 +26,44 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Set App Version
+        id: ver
+        run: |
+          APP_VER="1.0.${{ github.run_number }}"
+          echo "version=$APP_VER" >> $GITHUB_OUTPUT
+          echo "code=${{ github.run_number }}" >> $GITHUB_OUTPUT
+
       - name: Install Capacitor & prepare web assets
         run: |
           npm install
           npm run prepare-web
+          sed -i "s/__APP_VERSION__/${{ steps.ver.outputs.version }}/g" www/index.html
 
-      - name: Add Android platform
-        run: npx cap add android
+      - name: Add Android platform & set version
+        run: |
+          npx cap add android
+          sed -i "s/versionCode 1/versionCode ${{ steps.ver.outputs.code }}/" android/app/build.gradle
+          sed -i "s/versionName \"1.0\"/versionName \"${{ steps.ver.outputs.version }}\"/" android/app/build.gradle
 
       - name: Build Debug APK
         run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk ../TamanBermainSiKecil-v${{ steps.ver.outputs.version }}.apk
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: TamanBermainSiKecil-debug.apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: TamanBermainSiKecil-v${{ steps.ver.outputs.version }}.apk
+          path: TamanBermainSiKecil-v${{ steps.ver.outputs.version }}.apk
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Taman Bermain Si Kecil v${{ steps.ver.outputs.version }}
+          body: |
+            Build otomatis APK Android **Taman Bermain Si Kecil v${{ steps.ver.outputs.version }}**.
+            Unduh file `.apk` di bawah untuk memasang atau memperbarui aplikasi di perangkat Android.
+          files: TamanBermainSiKecil-v${{ steps.ver.outputs.version }}.apk

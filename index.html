@@ -513,6 +513,18 @@ canvas.full{position:absolute;inset:0;width:100%;height:100%;touch-action:none;d
 .pop-float{position:fixed;left:0;top:0;font-size:clamp(32px,8vw,52px);line-height:1;pointer-events:none;z-index:75;translate:-50% -50%;animation:popfloat .85s cubic-bezier(.2,.9,.3,1) forwards}
 @keyframes popfloat{0%{transform:translateY(0) scale(.5);opacity:0}25%{transform:translateY(-18px) scale(1.2);opacity:1}100%{transform:translateY(-85px) scale(.95);opacity:0}}
 .rb-rainbow{filter:drop-shadow(0 0 12px #ffd23f) hue-rotate(0deg)}
+/* Update modal */
+#updateModal{position:fixed;inset:0;z-index:90;display:grid;place-items:center;background:rgba(42,33,64,.52);backdrop-filter:blur(4px);padding:18px}
+.upd-card{background:var(--paper);border:5px solid var(--ink);border-radius:32px;box-shadow:0 10px 0 var(--ink);padding:22px 24px;max-width:380px;width:100%;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;animation:popin .38s cubic-bezier(.3,1.6,.5,1)}
+.upd-ico{font-size:3.2rem;line-height:1}
+.upd-title{margin:0;font-size:1.55rem;font-weight:800;line-height:1.15}
+.upd-ver{background:var(--sun);border:3px solid var(--ink);border-radius:99px;padding:2px 14px;font-weight:800;font-size:.95rem}
+.upd-msg{margin:0;font-size:.98rem;font-weight:600;opacity:.85;line-height:1.35}
+.upd-actions{display:flex;flex-direction:column;gap:10px;width:100%;margin-top:4px}
+.upd-now{background:var(--leaf);color:var(--ink);border:4px solid var(--ink);border-radius:99px;padding:11px 18px;font-weight:800;font-size:1.1rem;box-shadow:0 5px 0 var(--ink);text-decoration:none;display:block;transition:transform .1s}
+.upd-now:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.upd-skip{background:#e9e4dc;color:var(--ink);border:3px solid var(--ink);border-radius:99px;padding:9px 16px;font-weight:700;font-size:.98rem;box-shadow:0 4px 0 var(--ink);transition:transform .1s}
+.upd-skip:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
 </style>
 
 <div class="world" aria-hidden="true">
@@ -609,6 +621,18 @@ canvas.full{position:absolute;inset:0;width:100%;height:100%;touch-action:none;d
     <b id="rewardText">Hebat!</b>
     <div id="stickerNew" class="sticker-new"><span class="st"></span><small>Stiker baru!</small></div>
     <button id="rewardNext" class="bigbtn" aria-label="Lanjut">▶</button>
+  </div>
+</div>
+<div id="updateModal" hidden role="dialog" aria-modal="true" aria-labelledby="updTitle">
+  <div class="upd-card">
+    <div class="upd-ico" aria-hidden="true">🚀</div>
+    <h2 id="updTitle" class="upd-title">Ada Update Baru!</h2>
+    <span id="updVer" class="upd-ver">v1.0.1</span>
+    <p id="updMsg" class="upd-msg">Versi terbaru Taman Bermain Si Kecil sudah tersedia dengan permainan dan perbaikan baru.</p>
+    <div class="upd-actions">
+      <a id="updNowBtn" class="upd-now" href="#" target="_blank" rel="noopener">⬇️ Update Sekarang</a>
+      <button id="updSkipBtn" class="upd-skip" type="button">Lewati Versi Ini</button>
+    </div>
   </div>
 </div>
 <canvas id="fx" aria-hidden="true"></canvas>
@@ -3030,6 +3054,48 @@ document.addEventListener('fullscreenchange', paintFull);
 document.addEventListener('webkitfullscreenchange', paintFull);
 paintFull();
 paint();
+
+// In-app auto-update check against GitHub Releases
+(() => {
+  const rawVer = '__APP_VERSION__';
+  const APP_VERSION = rawVer.includes('__APP_VERSION') ? '1.0.0' : rawVer.replace(/^v/i, '');
+  const REPO = 'gabink19/tamanbermainanak';
+  const cmpVer = (a, b) => {
+    const pa = String(a).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+    const pb = String(b).replace(/^v/i, '').split('.').map(n => parseInt(n, 10) || 0);
+    for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+      if ((pa[i] || 0) !== (pb[i] || 0)) return (pa[i] || 0) - (pb[i] || 0);
+    }
+    return 0;
+  };
+  async function checkAppUpdate() {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${REPO}/releases/latest`, {
+        headers: { Accept: 'application/vnd.github+json' },
+        cache: 'no-store',
+      });
+      if (!res.ok) return;
+      const rel = await res.json();
+      const remoteVer = String(rel.tag_name || '').replace(/^v/i, '').trim();
+      if (!remoteVer || cmpVer(remoteVer, APP_VERSION) <= 0) return;
+      if (store.get('skippedVersion', '') === remoteVer) return;
+      const apkAsset = (rel.assets || []).find(a => /\.apk$/i.test(a.name || ''));
+      const dlUrl = (apkAsset && apkAsset.browser_download_url) || rel.html_url;
+      if (!dlUrl) return;
+      const modal = $('#updateModal');
+      $('#updVer').textContent = 'v' + remoteVer;
+      $('#updNowBtn').href = dlUrl;
+      $('#updNowBtn').onclick = () => { modal.hidden = true; };
+      $('#updSkipBtn').onclick = () => {
+        store.set('skippedVersion', remoteVer);
+        modal.hidden = true;
+        sfx.tap();
+      };
+      modal.hidden = false;
+    } catch (_) {}
+  }
+  setTimeout(checkAppUpdate, 1500);
+})();
 })();
 </script>
 
