@@ -125,13 +125,15 @@ public class GamesPack1 {
             if (getWidth() <= 0 || getHeight() <= 0 || getChildCount() > 9) return;
             String key = GameData.SEA_ANIMALS.get(rnd.nextInt(GameData.SEA_ANIMALS.size()));
             GameData.Item it = GameData.ITEMS.get(key);
-            int sz = UiHelper.dp(getContext(), 84 + rnd.nextInt(26));
+            int sz = UiHelper.dp(getContext(), 90 + rnd.nextInt(24));
 
-            TextView b = new TextView(getContext());
-            b.setText(it.emoji);
-            b.setTextSize(38);
-            b.setGravity(Gravity.CENTER);
+            FrameLayout b = new FrameLayout(getContext());
+            int pad = UiHelper.dp(getContext(), 12);
+            b.setPadding(pad, pad, pad, pad);
             b.setBackground(UiHelper.toyBox(getContext(), 0x88E6FAFF, 99, 3));
+            SpriteView sv = new SpriteView(getContext(), key);
+            sv.setMood(CartoonArt.Mood.HAPPY);
+            b.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             b.setX(rnd.nextInt(Math.max(1, getWidth() - sz)));
             b.setY(getHeight() + sz);
             addView(b, new LayoutParams(sz, sz));
@@ -374,12 +376,21 @@ public class GamesPack1 {
             col.setOrientation(LinearLayout.VERTICAL);
             col.setGravity(Gravity.CENTER);
 
-            TextView card = new TextView(getContext());
-            card.setText("🙈");
-            card.setTextSize(104);
-            card.setGravity(Gravity.CENTER);
+            FrameLayout card = new FrameLayout(getContext());
             int sz = UiHelper.dp(getContext(), 220);
+            int pad = UiHelper.dp(getContext(), 20);
+            card.setPadding(pad, pad, pad, pad);
             card.setBackground(UiHelper.toyBox(getContext(), 0xFFFFFFFF, 36, 4));
+            SpriteView aniSprite = new SpriteView(getContext(), curKey);
+            aniSprite.setMood(CartoonArt.Mood.HAPPY);
+            aniSprite.setVisibility(INVISIBLE);
+            card.addView(aniSprite, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+            TextView cover = new TextView(getContext());
+            cover.setText("🙈");
+            cover.setTextSize(96);
+            cover.setGravity(Gravity.CENTER);
+            card.addView(cover, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
             col.addView(card, new LinearLayout.LayoutParams(sz, sz));
 
             TextView label = new TextView(getContext());
@@ -395,7 +406,10 @@ public class GamesPack1 {
                 if (!open) {
                     open = true;
                     GameData.Item it = GameData.ITEMS.get(curKey);
-                    card.setText(it.emoji);
+                    cover.setVisibility(INVISIBLE);
+                    aniSprite.setKey(curKey);
+                    aniSprite.setVisibility(VISIBLE);
+                    aniSprite.react();
                     label.setText("Cilukba! " + it.name + "!");
                     host.sfx().boing();
                     host.sfx().playReal(curKey);
@@ -404,7 +418,8 @@ public class GamesPack1 {
                 } else {
                     open = false;
                     curKey = GameData.VOCAL_ANIMALS.get(rnd.nextInt(GameData.VOCAL_ANIMALS.size()));
-                    card.setText("🙈");
+                    aniSprite.setVisibility(INVISIBLE);
+                    cover.setVisibility(VISIBLE);
                     label.setText("Di mana, ya?");
                     host.sfx().playVoice("dimana");
                 }
@@ -431,14 +446,25 @@ public class GamesPack1 {
             phone.setPadding(p, p, p, p);
             phone.setBackground(UiHelper.toyBox(getContext(), 0xFFFFFAF0, 32, 4));
 
+            LinearLayout screenBox = new LinearLayout(getContext());
+            screenBox.setOrientation(LinearLayout.HORIZONTAL);
+            screenBox.setGravity(Gravity.CENTER);
+            screenBox.setBackground(UiHelper.toyBox(getContext(), 0xFFE6F7FF, 20, 3));
+            SpriteView callerSprite = new SpriteView(getContext(), "kucing");
+            callerSprite.setMood(CartoonArt.Mood.HAPPY);
+            callerSprite.setVisibility(GONE);
+            int spSz = UiHelper.dp(getContext(), 76);
+            screenBox.addView(callerSprite, new LinearLayout.LayoutParams(spSz, spSz));
+
             screen = new TextView(getContext());
             screen.setText("📞");
-            screen.setTextSize(36);
+            screen.setTextSize(32);
             screen.setTextColor(0xFF2A2140);
             screen.setTypeface(null, Typeface.BOLD);
             screen.setGravity(Gravity.CENTER);
-            screen.setBackground(UiHelper.toyBox(getContext(), 0xFFE6F7FF, 20, 3));
-            phone.addView(screen, new LinearLayout.LayoutParams(
+            screenBox.addView(screen, new LinearLayout.LayoutParams(
+                LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+            phone.addView(screenBox, new LinearLayout.LayoutParams(
                 LayoutParams.MATCH_PARENT, UiHelper.dp(getContext(), 110)));
 
             GridLayout pad = new GridLayout(getContext());
@@ -460,15 +486,20 @@ public class GamesPack1 {
                     if ("📞".equals(k)) {
                         String ak = GameData.VOCAL_ANIMALS.get(rnd.nextInt(GameData.VOCAL_ANIMALS.size()));
                         GameData.Item it = GameData.ITEMS.get(ak);
-                        screen.setText(it.emoji + "  " + it.name);
+                        callerSprite.setKey(ak);
+                        callerSprite.setVisibility(VISIBLE);
+                        callerSprite.react();
+                        screen.setText("  " + it.name + "!");
                         host.sfx().playReal(ak);
                         host.sfx().playVoice("halo_" + ak);
-                        burstView(screen, null, 20);
+                        burstView(screenBox, null, 20);
                     } else if ("✖".equals(k)) {
                         digits = "";
+                        callerSprite.setVisibility(GONE);
                         screen.setText("📞");
                         host.sfx().playVoice("dadah");
                     } else {
+                        callerSprite.setVisibility(GONE);
                         digits = (digits + k).length() > 8 ? (digits + k).substring(1) : (digits + k);
                         screen.setText(digits);
                         host.sfx().tap();

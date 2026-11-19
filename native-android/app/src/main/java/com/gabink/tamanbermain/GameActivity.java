@@ -176,14 +176,14 @@ public class GameActivity extends AppCompatActivity implements BaseGameView.Host
         card.setPadding(p, p, p, p);
         card.setBackground(UiHelper.toyBox(this, 0xFFFFFAF0, 30, 4));
 
-        TextView cici = new TextView(this);
-        cici.setText("🐥");
-        cici.setTextSize(46);
-        card.addView(cici);
+        PlaygroundViews.CiciView cici = new PlaygroundViews.CiciView(this);
+        cici.wave();
+        int ciciSz = UiHelper.dp(this, 86);
+        card.addView(cici, new LinearLayout.LayoutParams(ciciSz, ciciSz));
 
         TextView stars = new TextView(this);
         stars.setText("⭐⭐⭐");
-        stars.setTextSize(38);
+        stars.setTextSize(34);
         card.addView(stars);
 
         TextView msg = new TextView(this);
@@ -194,17 +194,26 @@ public class GameActivity extends AppCompatActivity implements BaseGameView.Host
         msg.setTypeface(null, Typeface.BOLD);
         card.addView(msg);
 
+        LinearLayout stkBadge = new LinearLayout(this);
+        stkBadge.setOrientation(LinearLayout.HORIZONTAL);
+        stkBadge.setGravity(Gravity.CENTER);
+        stkBadge.setPadding(UiHelper.dp(this, 12), UiHelper.dp(this, 6), UiHelper.dp(this, 14), UiHelper.dp(this, 6));
+        stkBadge.setBackground(UiHelper.toyBox(this, 0xFFFFD23F, 99, 3));
+        SpriteView stkSprite = new SpriteView(this, stk.key);
+        stkSprite.setMood(CartoonArt.Mood.HAPPY);
+        int stkSz = UiHelper.dp(this, 42);
+        stkBadge.addView(stkSprite, new LinearLayout.LayoutParams(stkSz, stkSz));
+
         TextView stkView = new TextView(this);
-        stkView.setText(stk.emoji + "  " + (isNew ? "Stiker baru!" : "Stiker!"));
-        stkView.setTextSize(18);
+        stkView.setText("  " + stk.name + " • " + (isNew ? "Stiker baru!" : "Stiker!"));
+        stkView.setTextSize(16);
         stkView.setTextColor(0xFF2A2140);
         stkView.setTypeface(null, Typeface.BOLD);
-        stkView.setPadding(UiHelper.dp(this, 14), UiHelper.dp(this, 6), UiHelper.dp(this, 14), UiHelper.dp(this, 6));
-        stkView.setBackground(UiHelper.toyBox(this, 0xFFFFD23F, 99, 3));
+        stkBadge.addView(stkView);
         LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         slp.topMargin = UiHelper.dp(this, 10);
-        card.addView(stkView, slp);
+        card.addView(stkBadge, slp);
 
         Button nextBtn = new Button(this);
         nextBtn.setText("▶ Main Lagi");

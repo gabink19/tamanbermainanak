@@ -36,11 +36,10 @@ public class GamesPack4 {
             col.setOrientation(LinearLayout.VERTICAL);
             col.setGravity(Gravity.CENTER);
 
-            TextView ani = new TextView(getContext());
-            ani.setText(it.emoji);
-            ani.setTextSize(104);
-            ani.setGravity(Gravity.CENTER);
-            col.addView(ani);
+            SpriteView ani = new SpriteView(getContext(), patient);
+            ani.setMood(CartoonArt.Mood.SICK);
+            int aniSz = UiHelper.dp(getContext(), 170);
+            col.addView(ani, new LinearLayout.LayoutParams(aniSz, aniSz));
 
             TextView status = new TextView(getContext());
             status.setText("Ayo obati " + it.name + "!");
@@ -76,6 +75,8 @@ public class GamesPack4 {
                     if (step < dok.length) {
                         btns.get(step).setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFD23F, 20, 3, 4));
                     } else {
+                        ani.setMood(CartoonArt.Mood.HAPPY);
+                        ani.react();
                         status.setText(it.name + " sudah sembuh! 💖");
                         host.sfx().playReal(patient);
                         handler.postDelayed(() -> host.celebrate(this::nextRound, "sembuh_" + patient), 1200);
@@ -111,11 +112,11 @@ public class GamesPack4 {
 
             TextView hatTv = new TextView(getContext());
             hatTv.setText(""); hatTv.setTextSize(48); hatTv.setGravity(Gravity.CENTER);
-            TextView aniTv = new TextView(getContext());
-            aniTv.setText(it.emoji); aniTv.setTextSize(100); aniTv.setGravity(Gravity.CENTER);
+            SpriteView aniTv = new SpriteView(getContext(), k);
+            int aniSz = UiHelper.dp(getContext(), 155);
             TextView neckTv = new TextView(getContext());
             neckTv.setText(""); neckTv.setTextSize(42); neckTv.setGravity(Gravity.CENTER);
-            col.addView(hatTv); col.addView(aniTv); col.addView(neckTv);
+            col.addView(hatTv); col.addView(aniTv, new LinearLayout.LayoutParams(aniSz, aniSz)); col.addView(neckTv);
 
             LinearLayout opts = new LinearLayout(getContext());
             opts.setOrientation(LinearLayout.HORIZONTAL);
@@ -134,6 +135,8 @@ public class GamesPack4 {
                     if ("hat".equals(a[2])) hatTv.setText(a[0]);
                     else neckTv.setText(a[0]);
                     UiHelper.bounce(aniTv);
+                    aniTv.setMood(CartoonArt.Mood.HAPPY);
+                    aniTv.react();
                     host.sfx().pop();
                     host.sfx().playVoice("aks_" + a[1]);
                     burstView(aniTv, null, 18);
@@ -169,11 +172,17 @@ public class GamesPack4 {
             col.setOrientation(LinearLayout.VERTICAL);
             col.setGravity(Gravity.CENTER);
 
-            TextView ani = new TextView(getContext());
-            ani.setText(it.emoji + " 🟤🟤");
-            ani.setTextSize(78);
-            ani.setGravity(Gravity.CENTER);
-            col.addView(ani);
+            LinearLayout aniBox = new LinearLayout(getContext());
+            aniBox.setOrientation(LinearLayout.HORIZONTAL);
+            aniBox.setGravity(Gravity.CENTER);
+            SpriteView ani = new SpriteView(getContext(), k);
+            int aniSz = UiHelper.dp(getContext(), 155);
+            aniBox.addView(ani, new LinearLayout.LayoutParams(aniSz, aniSz));
+            TextView fx = new TextView(getContext());
+            fx.setText(" 🟤🟤");
+            fx.setTextSize(34);
+            aniBox.addView(fx);
+            col.addView(aniBox);
 
             TextView info = new TextView(getContext());
             info.setText("Ketuk spons 🧽 untuk menggosok! (0 / 5)");
@@ -195,13 +204,15 @@ public class GamesPack4 {
                 if (rubs >= 5) return;
                 rubs++;
                 UiHelper.bounce(ani);
+                ani.react();
                 host.sfx().pop();
                 burstView(ani, new int[]{0xFFFFFFFF, 0xFFBDF0FF, 0xFF4CC9F0}, 20);
                 info.setText("Ketuk spons 🧽 untuk menggosok! (" + rubs + " / 5)");
-                if (rubs == 2) ani.setText(it.emoji + " 🫧");
-                else if (rubs == 4) ani.setText(it.emoji + " ✨");
+                if (rubs == 2) fx.setText(" 🫧🫧");
+                else if (rubs == 4) fx.setText(" ✨");
                 else if (rubs >= 5) {
-                    ani.setText("✨ " + it.emoji + " ✨");
+                    fx.setText(" ✨✨");
+                    ani.setMood(CartoonArt.Mood.HAPPY);
                     host.sfx().playReal(k);
                     handler.postDelayed(() -> host.celebrate(this::nextRound, "mandi_done"), 800);
                 }
@@ -371,13 +382,14 @@ public class GamesPack4 {
             StringBuilder riders = new StringBuilder("🚂");
             for (String ak : sel) {
                 GameData.Item it = GameData.ITEMS.get(ak);
-                TextView tv = new TextView(getContext());
-                tv.setText(it.emoji);
-                tv.setTextSize(54);
-                tv.setPadding(UiHelper.dp(getContext(), 12), UiHelper.dp(getContext(), 12), UiHelper.dp(getContext(), 12), UiHelper.dp(getContext(), 12));
+                FrameLayout tv = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), 10);
+                tv.setPadding(pad, pad, pad, pad);
                 tv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFFFF, 22, 3, 5));
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                SpriteView sv = new SpriteView(getContext(), ak);
+                tv.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                int sz = UiHelper.dp(getContext(), 90);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 6), 0, UiHelper.dp(getContext(), 6), 0);
                 tv.setOnClickListener(v -> {
                     if (tv.getVisibility() != VISIBLE) return;

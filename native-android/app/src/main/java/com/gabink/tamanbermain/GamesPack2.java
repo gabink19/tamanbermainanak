@@ -43,19 +43,26 @@ public class GamesPack2 {
 
             for (int i = 0; i < 4; i++) {
                 final int idx = i;
-                TextView bush = new TextView(getContext());
-                bush.setText(hiders[i]);
-                bush.setTextSize(68);
-                bush.setGravity(Gravity.CENTER);
+                FrameLayout bush = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), 14);
+                bush.setPadding(pad, pad, pad, pad);
                 bush.setBackground(UiHelper.toyBox(getContext(), 0x88FFFFFF, 28, 3));
+                TextView cover = new TextView(getContext());
+                cover.setText(hiders[i]);
+                cover.setTextSize(68);
+                cover.setGravity(Gravity.CENTER);
+                bush.addView(cover, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 bush.setOnClickListener(v -> {
                     if (found || bush.getTag() != null) return;
                     bush.setTag("open");
                     UiHelper.bounce(bush);
                     if (idx == winIdx) {
                         found = true;
-                        GameData.Item it = GameData.ITEMS.get(targetKey);
-                        bush.setText(it.emoji);
+                        bush.removeAllViews();
+                        SpriteView sv = new SpriteView(getContext(), targetKey);
+                        sv.setMood(CartoonArt.Mood.HAPPY);
+                        sv.react();
+                        bush.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                         bush.setBackground(UiHelper.toyBox(getContext(), 0xFFFFFFFF, 28, 4));
                         host.sfx().ding();
                         host.sfx().playReal(targetKey);
@@ -63,7 +70,7 @@ public class GamesPack2 {
                         burstView(bush, null, 30);
                         handler.postDelayed(() -> host.celebrate(this::nextRound, "yeay"), 1400);
                     } else {
-                        bush.setText(decors[rnd.nextInt(decors.length)]);
+                        cover.setText(decors[rnd.nextInt(decors.length)]);
                         host.sfx().wrong();
                     }
                 });
@@ -192,6 +199,7 @@ public class GamesPack2 {
             col.setGravity(Gravity.CENTER);
 
             SpriteView aniView = new SpriteView(getContext(), curAnimal);
+            aniView.setMood(CartoonArt.Mood.HUNGRY);
             int aniSz = UiHelper.dp(getContext(), 170);
             aniView.setOnClickListener(v -> {
                 UiHelper.bounce(aniView);
@@ -228,6 +236,8 @@ public class GamesPack2 {
                 fb.setOnClickListener(v -> {
                     if (fk.equals(goodFood)) {
                         UiHelper.bounce(aniView);
+                        aniView.setMood(CartoonArt.Mood.HAPPY);
+                        aniView.react();
                         host.sfx().good();
                         host.sfx().playReal(curAnimal);
                         host.sfx().playVoice("nyam_" + curAnimal);
@@ -401,7 +411,7 @@ public class GamesPack2 {
 
     /* 14. Kartu Kembar */
     public static class PasanganGame extends BaseGameView {
-        private TextView firstCard = null;
+        private FrameLayout firstCard = null;
         private int pairsLeft = 3;
 
         public PasanganGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFFFF3C4); }
@@ -425,25 +435,38 @@ public class GamesPack2 {
             grid.setPadding(p, p, p, p);
 
             for (GameData.Item it : cards) {
-                TextView c = new TextView(getContext());
-                c.setText("❓");
-                c.setTextSize(48);
-                c.setGravity(Gravity.CENTER);
+                FrameLayout c = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), 14);
+                c.setPadding(pad, pad, pad, pad);
                 c.setBackground(UiHelper.toyBox(getContext(), 0xFF4CC9F0, 24, 3));
+                SpriteView sv = new SpriteView(getContext(), it.key);
+                sv.setVisibility(INVISIBLE);
+                c.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
+                TextView q = new TextView(getContext());
+                q.setText("❓");
+                q.setTextSize(48);
+                q.setGravity(Gravity.CENTER);
+                c.addView(q, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+
                 c.setTag(it);
                 c.setOnClickListener(v -> {
-                    if ("❓".equals(c.getText().toString())) {
-                        c.setText(it.emoji);
+                    if (q.getVisibility() == VISIBLE) {
+                        q.setVisibility(INVISIBLE);
+                        sv.setVisibility(VISIBLE);
+                        sv.react();
                         c.setBackground(UiHelper.toyBox(getContext(), 0xFFFFFFFF, 24, 3));
                         UiHelper.bounce(c);
                         host.sfx().tap();
                         if (firstCard == null) {
                             firstCard = c;
                         } else {
-                            TextView prev = firstCard;
+                            FrameLayout prev = firstCard;
                             firstCard = null;
                             GameData.Item pIt = (GameData.Item) prev.getTag();
                             if (pIt.key.equals(it.key)) {
+                                sv.setMood(CartoonArt.Mood.HAPPY);
+                                ((SpriteView) prev.getChildAt(0)).setMood(CartoonArt.Mood.HAPPY);
                                 host.sfx().good();
                                 host.sfx().playVoice("n_" + it.key);
                                 burstView(c, null, 20);
@@ -454,9 +477,11 @@ public class GamesPack2 {
                             } else {
                                 host.sfx().wrong();
                                 handler.postDelayed(() -> {
-                                    prev.setText("❓");
+                                    prev.getChildAt(0).setVisibility(INVISIBLE);
+                                    prev.getChildAt(1).setVisibility(VISIBLE);
                                     prev.setBackground(UiHelper.toyBox(getContext(), 0xFF4CC9F0, 24, 3));
-                                    c.setText("❓");
+                                    sv.setVisibility(INVISIBLE);
+                                    q.setVisibility(VISIBLE);
                                     c.setBackground(UiHelper.toyBox(getContext(), 0xFF4CC9F0, 24, 3));
                                 }, 700);
                             }
@@ -513,15 +538,15 @@ public class GamesPack2 {
             row.setPadding(0, UiHelper.dp(getContext(), 30), 0, 0);
 
             for (int i = 0; i < 6; i++) {
-                TextView tv = new TextView(getContext());
-                tv.setText(f.emoji);
-                tv.setTextSize(46);
-                tv.setPadding(UiHelper.dp(getContext(), 6), UiHelper.dp(getContext(), 6), UiHelper.dp(getContext(), 6), UiHelper.dp(getContext(), 6));
-                tv.setOnClickListener(v -> {
-                    if (tv.getVisibility() != VISIBLE || got >= targetN) return;
-                    tv.setVisibility(INVISIBLE);
+                SpriteView sv = new SpriteView(getContext(), f.key);
+                int sz = UiHelper.dp(getContext(), 54);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
+                lp.setMargins(UiHelper.dp(getContext(), 3), 0, UiHelper.dp(getContext(), 3), 0);
+                sv.setOnClickListener(v -> {
+                    if (sv.getVisibility() != VISIBLE || got >= targetN) return;
+                    sv.setVisibility(INVISIBLE);
                     got++;
-                    prompt.setText("Petik " + targetN + " " + f.emoji + "  (" + got + " / " + targetN + ")");
+                    prompt.setText("Petik " + targetN + " " + f.name + "  (" + got + " / " + targetN + ")");
                     host.sfx().pop();
                     host.sfx().playVoice("num_" + got);
                     burstView(prompt, null, 14);
@@ -529,7 +554,7 @@ public class GamesPack2 {
                         handler.postDelayed(() -> host.celebrate(this::nextRound, null), 700);
                     }
                 });
-                row.addView(tv);
+                row.addView(sv, lp);
             }
             col.addView(row);
             addView(col, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));

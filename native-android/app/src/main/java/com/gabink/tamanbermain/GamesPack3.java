@@ -58,26 +58,39 @@ public class GamesPack3 {
             botRow.setGravity(Gravity.CENTER);
             botRow.setPadding(0, UiHelper.dp(getContext(), 32), 0, 0);
 
-            List<TextView> pViews = new ArrayList<>();
+            List<LinearLayout> pViews = new ArrayList<>();
             for (int i : sel) {
-                TextView pv = new TextView(getContext());
-                pv.setText(jobs[i][1] + "\n" + jobs[i][2]);
-                pv.setTextSize(16);
-                pv.setTextColor(0xFF2A2140);
-                pv.setTypeface(null, Typeface.BOLD);
+                LinearLayout pv = new LinearLayout(getContext());
+                pv.setOrientation(LinearLayout.VERTICAL);
                 pv.setGravity(Gravity.CENTER);
+                int pad = UiHelper.dp(getContext(), 6);
+                pv.setPadding(pad, pad, pad, pad);
                 pv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFAF0, 22, 3, 5));
                 pv.setTag(i);
-                int w = UiHelper.dp(getContext(), 104), h = UiHelper.dp(getContext(), 100);
+
+                SpriteView psv = new SpriteView(getContext(), jobs[i][0]);
+                int pSz = UiHelper.dp(getContext(), 60);
+                pv.addView(psv, new LinearLayout.LayoutParams(pSz, pSz));
+
+                TextView pLbl = new TextView(getContext());
+                pLbl.setText(jobs[i][2]);
+                pLbl.setTextSize(13);
+                pLbl.setTextColor(0xFF2A2140);
+                pLbl.setTypeface(null, Typeface.BOLD);
+                pLbl.setGravity(Gravity.CENTER);
+                pv.addView(pLbl);
+
+                int w = UiHelper.dp(getContext(), 104), h = UiHelper.dp(getContext(), 104);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(w, h);
                 lp.setMargins(UiHelper.dp(getContext(), 6), 0, UiHelper.dp(getContext(), 6), 0);
                 pv.setOnClickListener(v -> {
                     if (pv.getAlpha() < 0.5f) return;
                     pickedIdx = i;
-                    for (TextView tv : pViews) {
+                    for (LinearLayout tv : pViews) {
                         if (tv.getAlpha() > 0.5f)
                             tv.setBackground(UiHelper.toyBox3D(getContext(), ((int) tv.getTag() == i) ? 0xFFFFD23F : 0xFFFFFAF0, 22, 3, 5));
                     }
+                    psv.react();
                     UiHelper.bounce(pv);
                     host.sfx().tap();
                 });
@@ -109,7 +122,7 @@ public class GamesPack3 {
                         host.sfx().playReal(jobs[i][3]);
                         burstView(cv, null, 24);
                         cv.setAlpha(0.3f);
-                        for (TextView tv : pViews) if ((int) tv.getTag() == i) tv.setAlpha(0.3f);
+                        for (LinearLayout tv : pViews) if ((int) tv.getTag() == i) tv.setAlpha(0.3f);
                         pickedIdx = -1;
                         left--;
                         if (left == 0) handler.postDelayed(() -> host.celebrate(this::nextRound, null), 900);
@@ -155,15 +168,16 @@ public class GamesPack3 {
             LinearLayout tray = new LinearLayout(getContext());
             tray.setOrientation(LinearLayout.HORIZONTAL);
             tray.setGravity(Gravity.CENTER);
-            List<TextView> tvs = new ArrayList<>();
+            List<FrameLayout> tvs = new ArrayList<>();
             for (int i = 0; i < round.size(); i++) {
                 final int idx = i;
                 GameData.Item it = round.get(i);
-                TextView tv = new TextView(getContext());
-                tv.setText(it.emoji);
-                tv.setTextSize(46);
-                tv.setGravity(Gravity.CENTER);
+                FrameLayout tv = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), 10);
+                tv.setPadding(pad, pad, pad, pad);
                 tv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFFFF, 20, 3, 4));
+                SpriteView sv = new SpriteView(getContext(), it.key);
+                tv.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 76);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 5), 0, UiHelper.dp(getContext(), 5), 0);
@@ -173,6 +187,7 @@ public class GamesPack3 {
                     for (int j = 0; j < tvs.size(); j++) {
                         tvs.get(j).setBackground(UiHelper.toyBox3D(getContext(), j == idx ? 0xFFFFD23F : 0xFFFFFFFF, 20, 3, 4));
                     }
+                    sv.react();
                     UiHelper.bounce(tv);
                     host.sfx().playVoice("n_" + it.key);
                 });
@@ -336,15 +351,16 @@ public class GamesPack3 {
             LinearLayout tray = new LinearLayout(getContext());
             tray.setOrientation(LinearLayout.HORIZONTAL);
             tray.setGravity(Gravity.CENTER);
-            List<TextView> tvs = new ArrayList<>();
+            List<FrameLayout> tvs = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
                 final int idx = i;
                 GameData.Item it = GameData.ITEMS.get(round[i][0]);
-                TextView tv = new TextView(getContext());
-                tv.setText(it.emoji);
-                tv.setTextSize(50);
-                tv.setGravity(Gravity.CENTER);
+                FrameLayout tv = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), 10);
+                tv.setPadding(pad, pad, pad, pad);
                 tv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFFFF, 22, 3, 5));
+                SpriteView sv = new SpriteView(getContext(), it.key);
+                tv.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 88);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
@@ -353,6 +369,7 @@ public class GamesPack3 {
                     picked = idx;
                     for (int j = 0; j < tvs.size(); j++)
                         tvs.get(j).setBackground(UiHelper.toyBox3D(getContext(), j == idx ? 0xFFFFD23F : 0xFFFFFFFF, 22, 3, 5));
+                    sv.react();
                     UiHelper.bounce(tv);
                     host.sfx().playReal(it.key);
                     host.sfx().playVoice("n_" + it.key);

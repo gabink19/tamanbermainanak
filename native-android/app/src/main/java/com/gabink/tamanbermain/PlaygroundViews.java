@@ -108,7 +108,7 @@ public class PlaygroundViews {
         }
     }
 
-    /** Custom-drawn Cici the Chick mascot matching the original SVG art */
+    /** Storybook-style Cici the Chick mascot with expressive eyes, triple crest, and wing wave */
     public static class CiciView extends View {
         private final Paint fill = new Paint(Paint.ANTI_ALIAS_FLAG);
         private final Paint stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -125,7 +125,7 @@ public class PlaygroundViews {
         }
 
         public void wave() {
-            waveUntil = (System.currentTimeMillis() - t0) / 1000f + 1.2f;
+            waveUntil = (System.currentTimeMillis() - t0) / 1000f + 1.3f;
         }
 
         @Override
@@ -134,82 +134,95 @@ public class PlaygroundViews {
             if (w == 0 || h == 0) return;
             float s = Math.min(w, h) / 120f;
             float sec = (System.currentTimeMillis() - t0) / 1000f;
-            float bounceY = (float) Math.abs(Math.sin(sec * 3.5)) * -6f;
-            boolean blinking = (sec % 4f) > 3.85f;
-            float wingAng = (sec < waveUntil) ? (float) Math.sin(sec * 24f) * 32f : (float) Math.sin(sec * 3.5) * 6f;
+            boolean waving = sec < waveUntil;
+            float bounceY = waving
+                ? (float) Math.abs(Math.sin(sec * 10.0)) * -8f
+                : (float) Math.abs(Math.sin(sec * 3.5)) * -4.5f;
+            boolean blinking = !waving && (sec % 4f) > 3.85f;
+            float wingAng = waving ? (float) Math.sin(sec * 24f) * 34f : (float) Math.sin(sec * 3.5) * 7f;
 
             c.save();
             c.scale(s, s);
+            stroke.setStrokeWidth(4.2f);
+
+            // Soft ground shadow
+            fill.setColor(0x282A2140);
+            c.drawOval(new RectF(32, 111, 88, 119), fill);
+
             c.translate(0, bounceY);
-            stroke.setStrokeWidth(4.5f);
+            CartoonArt.applyBreath(c, sec, 3.5f, 0.028f);
 
-            // Shadow
-            fill.setColor(0x2E2A2140);
-            c.drawOval(new RectF(30, 112, 90, 121), fill);
-
-            // Crest
+            // Triple feathered crest
             fill.setColor(0xFFFF9F1C);
-            c.drawOval(new RectF(54, 8, 66, 28), fill);
-            c.drawOval(new RectF(54, 8, 66, 28), stroke);
+            c.drawOval(new RectF(46, 12, 56, 28), fill); c.drawOval(new RectF(46, 12, 56, 28), stroke);
+            c.drawOval(new RectF(54, 7, 66, 26), fill); c.drawOval(new RectF(54, 7, 66, 26), stroke);
+            c.drawOval(new RectF(64, 12, 74, 28), fill); c.drawOval(new RectF(64, 12, 74, 28), stroke);
 
             // Left & Right Wings
             c.save();
             c.rotate(-wingAng, 28, 72);
             fill.setColor(0xFFFFB703);
-            c.drawOval(new RectF(10, 62, 34, 92), fill);
-            c.drawOval(new RectF(10, 62, 34, 92), stroke);
+            c.drawOval(new RectF(10, 60, 34, 90), fill);
+            c.drawOval(new RectF(10, 60, 34, 90), stroke);
             c.restore();
 
             c.save();
             c.rotate(wingAng, 92, 72);
             fill.setColor(0xFFFFB703);
-            c.drawOval(new RectF(86, 62, 110, 92), fill);
-            c.drawOval(new RectF(86, 62, 110, 92), stroke);
+            c.drawOval(new RectF(86, 60, 110, 90), fill);
+            c.drawOval(new RectF(86, 60, 110, 90), stroke);
             c.restore();
+
+            // Feet
+            fill.setColor(0xFFFF9F1C);
+            c.drawRoundRect(new RectF(40, 102, 52, 113), 5, 5, fill);
+            c.drawRoundRect(new RectF(40, 102, 52, 113), 5, 5, stroke);
+            c.drawRoundRect(new RectF(68, 102, 80, 113), 5, 5, fill);
+            c.drawRoundRect(new RectF(68, 102, 80, 113), 5, 5, stroke);
 
             // Body
             fill.setColor(0xFFFFD23F);
-            c.drawOval(new RectF(22, 24, 98, 108), fill);
-            c.drawOval(new RectF(22, 24, 98, 108), stroke);
+            c.drawOval(new RectF(22, 24, 98, 106), fill);
+            c.drawOval(new RectF(22, 24, 98, 106), stroke);
 
             // Belly highlight
             fill.setColor(0xFFFFF3B0);
-            c.drawOval(new RectF(38, 66, 82, 100), fill);
+            c.drawOval(new RectF(37, 64, 83, 98), fill);
 
-            // Cheeks
-            fill.setColor(0xAAFF5D8F);
-            c.drawCircle(36, 64, 6.5f, fill);
-            c.drawCircle(84, 64, 6.5f, fill);
+            // Rosy cheeks
+            fill.setColor(0xB8FF7EB6);
+            c.drawCircle(35, 62, 6.2f, fill);
+            c.drawCircle(85, 62, 6.2f, fill);
 
-            // Eyes
-            fill.setColor(0xFF2A2140);
-            if (blinking) {
-                c.drawLine(40, 54, 50, 54, stroke);
-                c.drawLine(70, 54, 80, 54, stroke);
+            // Eyes (happy crescent when waving, double-sparkle otherwise)
+            if (waving) {
+                stroke.setStrokeWidth(3.6f);
+                c.drawArc(new RectF(39, 46, 51, 57), 195, 150, false, stroke);
+                c.drawArc(new RectF(69, 46, 81, 57), 195, 150, false, stroke);
+                stroke.setStrokeWidth(4.2f);
+            } else if (blinking) {
+                c.drawLine(40, 52, 50, 52, stroke);
+                c.drawLine(70, 52, 80, 52, stroke);
             } else {
-                c.drawCircle(45, 53, 5.5f, fill);
-                c.drawCircle(75, 53, 5.5f, fill);
+                fill.setColor(0xFF2A2140);
+                c.drawOval(new RectF(39.5f, 46.5f, 50.5f, 59.5f), fill);
+                c.drawOval(new RectF(69.5f, 46.5f, 80.5f, 59.5f), fill);
                 fill.setColor(0xFFFFFFFF);
-                c.drawCircle(43.5f, 51.2f, 2f, fill);
-                c.drawCircle(73.5f, 51.2f, 2f, fill);
+                c.drawCircle(43.2f, 50.2f, 2.2f, fill);
+                c.drawCircle(73.2f, 50.2f, 2.2f, fill);
+                c.drawCircle(46.8f, 55.2f, 1.1f, fill);
+                c.drawCircle(76.8f, 55.2f, 1.1f, fill);
             }
 
             // Beak
             beak.reset();
-            beak.moveTo(52, 62);
-            beak.lineTo(68, 62);
-            beak.lineTo(60, 73);
+            beak.moveTo(52, 60);
+            beak.lineTo(68, 60);
+            beak.lineTo(60, waving ? 73 : 70);
             beak.close();
             fill.setColor(0xFFFF9F1C);
             c.drawPath(beak, fill);
             c.drawPath(beak, stroke);
-
-            // Feet
-            fill.setColor(0xFFFF9F1C);
-            c.drawRoundRect(new RectF(40, 105, 52, 114), 4, 4, fill);
-            c.drawRoundRect(new RectF(40, 105, 52, 114), 4, 4, stroke);
-            c.drawRoundRect(new RectF(68, 105, 80, 114), 4, 4, fill);
-            c.drawRoundRect(new RectF(68, 105, 80, 114), 4, 4, stroke);
 
             c.restore();
             postInvalidateOnAnimation();
