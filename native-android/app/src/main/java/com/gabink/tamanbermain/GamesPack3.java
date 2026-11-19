@@ -33,7 +33,7 @@ public class GamesPack3 {
             {"astronot", "🧑‍🚀", "Astronot", "roket", "🚀"},
         };
 
-        public ProfesiGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFF9FE0FF); }
+        public ProfesiGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
@@ -58,39 +58,26 @@ public class GamesPack3 {
             botRow.setGravity(Gravity.CENTER);
             botRow.setPadding(0, UiHelper.dp(getContext(), 32), 0, 0);
 
-            List<LinearLayout> pViews = new ArrayList<>();
+            List<TextView> pViews = new ArrayList<>();
             for (int i : sel) {
-                LinearLayout pv = new LinearLayout(getContext());
-                pv.setOrientation(LinearLayout.VERTICAL);
+                TextView pv = new TextView(getContext());
+                pv.setText(jobs[i][1] + "\n" + jobs[i][2]);
+                pv.setTextSize(16);
+                pv.setTextColor(0xFF2A2140);
+                pv.setTypeface(null, Typeface.BOLD);
                 pv.setGravity(Gravity.CENTER);
-                int pad = UiHelper.dp(getContext(), 6);
-                pv.setPadding(pad, pad, pad, pad);
                 pv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFAF0, 22, 3, 5));
                 pv.setTag(i);
-
-                SpriteView psv = new SpriteView(getContext(), jobs[i][0]);
-                int pSz = UiHelper.dp(getContext(), 60);
-                pv.addView(psv, new LinearLayout.LayoutParams(pSz, pSz));
-
-                TextView pLbl = new TextView(getContext());
-                pLbl.setText(jobs[i][2]);
-                pLbl.setTextSize(13);
-                pLbl.setTextColor(0xFF2A2140);
-                pLbl.setTypeface(null, Typeface.BOLD);
-                pLbl.setGravity(Gravity.CENTER);
-                pv.addView(pLbl);
-
-                int w = UiHelper.dp(getContext(), 104), h = UiHelper.dp(getContext(), 104);
+                int w = UiHelper.dp(getContext(), 104), h = UiHelper.dp(getContext(), 100);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(w, h);
                 lp.setMargins(UiHelper.dp(getContext(), 6), 0, UiHelper.dp(getContext(), 6), 0);
                 pv.setOnClickListener(v -> {
                     if (pv.getAlpha() < 0.5f) return;
                     pickedIdx = i;
-                    for (LinearLayout tv : pViews) {
+                    for (TextView tv : pViews) {
                         if (tv.getAlpha() > 0.5f)
                             tv.setBackground(UiHelper.toyBox3D(getContext(), ((int) tv.getTag() == i) ? 0xFFFFD23F : 0xFFFFFAF0, 22, 3, 5));
                     }
-                    psv.react();
                     UiHelper.bounce(pv);
                     host.sfx().tap();
                 });
@@ -122,7 +109,7 @@ public class GamesPack3 {
                         host.sfx().playReal(jobs[i][3]);
                         burstView(cv, null, 24);
                         cv.setAlpha(0.3f);
-                        for (LinearLayout tv : pViews) if ((int) tv.getTag() == i) tv.setAlpha(0.3f);
+                        for (TextView tv : pViews) if ((int) tv.getTag() == i) tv.setAlpha(0.3f);
                         pickedIdx = -1;
                         left--;
                         if (left == 0) handler.postDelayed(() -> host.celebrate(this::nextRound, null), 900);
@@ -147,7 +134,7 @@ public class GamesPack3 {
     public static class SortirGame extends BaseGameView {
         private int left = 0, picked = -1;
 
-        public SortirGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFFFE9C7); }
+        public SortirGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
@@ -173,11 +160,10 @@ public class GamesPack3 {
                 final int idx = i;
                 GameData.Item it = round.get(i);
                 FrameLayout tv = new FrameLayout(getContext());
-                int pad = UiHelper.dp(getContext(), 10);
+                int pad = UiHelper.dp(getContext(), 8);
                 tv.setPadding(pad, pad, pad, pad);
                 tv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFFFF, 20, 3, 4));
-                SpriteView sv = new SpriteView(getContext(), it.key);
-                tv.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                tv.addView(new SpriteView(getContext(), it.key), new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 76);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 5), 0, UiHelper.dp(getContext(), 5), 0);
@@ -187,7 +173,6 @@ public class GamesPack3 {
                     for (int j = 0; j < tvs.size(); j++) {
                         tvs.get(j).setBackground(UiHelper.toyBox3D(getContext(), j == idx ? 0xFFFFD23F : 0xFFFFFFFF, 20, 3, 4));
                     }
-                    sv.react();
                     UiHelper.bounce(tv);
                     host.sfx().playVoice("n_" + it.key);
                 });
@@ -247,13 +232,13 @@ public class GamesPack3 {
     public static class BesarKecilGame extends BaseGameView {
         private int picked = -1, left = 4;
 
-        public BesarKecilGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFFFE9C7); }
+        public BesarKecilGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
             removeAllViews();
             picked = -1; left = 4;
-            String[] pool = {"🍎", "🐘", "🚗", "🍉", "🐱", "🧸"};
+            String[] pool = {"apel", "gajah", "mobil", "semangka", "kucing", "beruang"};
             String e1 = pool[rnd.nextInt(pool.length)];
             String e2 = pool[(rnd.nextInt(pool.length - 1) + 1) % pool.length];
             String[][] items = {{e1, "besar"}, {e1, "kecil"}, {e2, "besar"}, {e2, "kecil"}};
@@ -265,15 +250,15 @@ public class GamesPack3 {
             LinearLayout tray = new LinearLayout(getContext());
             tray.setOrientation(LinearLayout.HORIZONTAL);
             tray.setGravity(Gravity.CENTER);
-            List<TextView> tvs = new ArrayList<>();
+            List<FrameLayout> tvs = new ArrayList<>();
             for (int i = 0; i < items.length; i++) {
                 final int idx = i;
                 boolean big = "besar".equals(items[i][1]);
-                TextView tv = new TextView(getContext());
-                tv.setText(items[i][0]);
-                tv.setTextSize(big ? 52 : 24);
-                tv.setGravity(Gravity.CENTER);
+                FrameLayout tv = new FrameLayout(getContext());
+                int pad = UiHelper.dp(getContext(), big ? 6 : 18);
+                tv.setPadding(pad, pad, pad, pad);
                 tv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFFFF, 20, 3, 4));
+                tv.addView(new SpriteView(getContext(), items[i][0]), new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 76);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 5), 0, UiHelper.dp(getContext(), 5), 0);
@@ -331,7 +316,7 @@ public class GamesPack3 {
     public static class RumahGame extends BaseGameView {
         private int picked = -1, left = 3;
 
-        public RumahGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFFFE9C7); }
+        public RumahGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
@@ -356,11 +341,10 @@ public class GamesPack3 {
                 final int idx = i;
                 GameData.Item it = GameData.ITEMS.get(round[i][0]);
                 FrameLayout tv = new FrameLayout(getContext());
-                int pad = UiHelper.dp(getContext(), 10);
+                int pad = UiHelper.dp(getContext(), 8);
                 tv.setPadding(pad, pad, pad, pad);
                 tv.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFFFF, 22, 3, 5));
-                SpriteView sv = new SpriteView(getContext(), it.key);
-                tv.addView(sv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                tv.addView(new SpriteView(getContext(), it.key), new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 int sz = UiHelper.dp(getContext(), 88);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
@@ -369,7 +353,6 @@ public class GamesPack3 {
                     picked = idx;
                     for (int j = 0; j < tvs.size(); j++)
                         tvs.get(j).setBackground(UiHelper.toyBox3D(getContext(), j == idx ? 0xFFFFD23F : 0xFFFFFFFF, 22, 3, 5));
-                    sv.react();
                     UiHelper.bounce(tv);
                     host.sfx().playReal(it.key);
                     host.sfx().playVoice("n_" + it.key);
@@ -420,7 +403,7 @@ public class GamesPack3 {
     public static class BayanganGame extends BaseGameView {
         private int picked = -1, left = 3;
 
-        public BayanganGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFFFF3C4); }
+        public BayanganGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
@@ -511,7 +494,7 @@ public class GamesPack3 {
         private final String[] shapes = {"lingkaran", "segitiga", "persegi", "bintang", "hati"};
         private final int[] cols = {0xFFE63946, 0xFFFF8C1A, 0xFF4CC9F0, 0xFFFFD23F, 0xFFFF5D8F};
 
-        public BentukGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFC9F0E1); }
+        public BentukGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
@@ -628,7 +611,7 @@ public class GamesPack3 {
         private final int[] colVals = {0xFFE63946, 0xFFFF8C1A, 0xFFFFD23F, 0xFF3FB950, 0xFF2F80ED, 0xFF8E44EC};
         private final double[] notes = {523.25, 587.33, 659.25, 698.46, 783.99, 880.0};
 
-        public PelangiGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFF9FE4FF); }
+        public PelangiGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
@@ -707,13 +690,13 @@ public class GamesPack3 {
     public static class PuzzleGame extends BaseGameView {
         private int placed = 0;
 
-        public PuzzleGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFFFF3C4); }
+        public PuzzleGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {
             removeAllViews();
             placed = 0;
-            String[] pics = {"🦁", "🐘", "🚀", "🚂", "🍓", "🦋"};
+            String[] pics = {"singa", "gajah", "roket", "kereta", "stroberi", "kupukupu"};
             String pic = pics[rnd.nextInt(pics.length)];
 
             LinearLayout col = new LinearLayout(getContext());
@@ -721,7 +704,7 @@ public class GamesPack3 {
             col.setGravity(Gravity.CENTER);
 
             TextView preview = new TextView(getContext());
-            preview.setText("Susun " + pic + " (0 / 4)");
+            preview.setText("Susun Gambar! (0 / 4)");
             preview.setTextSize(22);
             preview.setTextColor(0xFF2A2140);
             preview.setTypeface(null, Typeface.BOLD);
@@ -734,14 +717,16 @@ public class GamesPack3 {
             int sz = UiHelper.dp(getContext(), 110);
             LinearLayout.LayoutParams glpRoot = new LinearLayout.LayoutParams(sz * 2 + UiHelper.dp(getContext(), 16), sz * 2 + UiHelper.dp(getContext(), 16));
             glpRoot.topMargin = UiHelper.dp(getContext(), 20);
-            TextView[] slots = new TextView[4];
+            FrameLayout[] slots = new FrameLayout[4];
             for (int i = 0; i < 4; i++) {
-                TextView s = new TextView(getContext());
-                s.setText(String.valueOf(i + 1));
-                s.setTextSize(28);
-                s.setTextColor(0x662A2140);
-                s.setGravity(Gravity.CENTER);
+                FrameLayout s = new FrameLayout(getContext());
+                int sPad = UiHelper.dp(getContext(), 10);
+                s.setPadding(sPad, sPad, sPad, sPad);
                 s.setBackground(UiHelper.toyBox(getContext(), 0x88FFFFFF, 18, 3));
+                TextView num = new TextView(getContext());
+                num.setText(String.valueOf(i + 1));
+                num.setTextSize(28); num.setTextColor(0x662A2140); num.setGravity(Gravity.CENTER);
+                s.addView(num, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                 slots[i] = s;
                 GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
                 lp.width = sz; lp.height = sz;
@@ -758,23 +743,22 @@ public class GamesPack3 {
             List<Integer> order = new ArrayList<>(List.of(0, 1, 2, 3));
             Collections.shuffle(order);
             for (int i : order) {
-                Button pb = new Button(getContext());
-                pb.setText(pic + " " + (i + 1));
-                pb.setTextSize(18);
-                pb.setTextColor(0xFF2A2140);
-                pb.setTypeface(null, Typeface.BOLD);
+                FrameLayout pb = new FrameLayout(getContext());
+                int pPad = UiHelper.dp(getContext(), 8);
+                pb.setPadding(pPad, pPad, pPad, pPad);
                 pb.setBackground(UiHelper.toyBox3D(getContext(), 0xFF4CC9F0, 18, 3, 4));
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(UiHelper.dp(getContext(), 76), UiHelper.dp(getContext(), 64));
+                pb.addView(new SpriteView(getContext(), pic), new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(UiHelper.dp(getContext(), 72), UiHelper.dp(getContext(), 72));
                 lp.setMargins(UiHelper.dp(getContext(), 4), 0, UiHelper.dp(getContext(), 4), 0);
                 pb.setOnClickListener(v -> {
                     pb.setVisibility(INVISIBLE);
-                    slots[i].setText(pic);
-                    slots[i].setTextSize(52);
+                    slots[i].removeAllViews();
+                    slots[i].addView(new SpriteView(getContext(), pic), new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
                     slots[i].setBackground(UiHelper.toyBox3D(getContext(), 0xFF6CC56F, 18, 3, 4));
                     host.sfx().good();
                     burstView(slots[i], null, 16);
                     placed++;
-                    preview.setText("Susun " + pic + " (" + placed + " / 4)");
+                    preview.setText("Susun Gambar! (" + placed + " / 4)");
                     if (placed >= 4) handler.postDelayed(() -> host.celebrate(this::nextRound, "puzzle_done"), 700);
                 });
                 tray.addView(pb, lp);
@@ -790,7 +774,7 @@ public class GamesPack3 {
     public static class JalanGame extends BaseGameView {
         private int step = 0;
 
-        public JalanGame(Context c, Host h) { super(c, h); setBackgroundColor(0xFFC8E6A0); }
+        public JalanGame(Context c, Host h) { super(c, h); setBackgroundColor(0x00000000); }
         @Override public void start() { nextRound(); }
 
         private void nextRound() {

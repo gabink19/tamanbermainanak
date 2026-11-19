@@ -44,7 +44,8 @@ public class GameActivity extends AppCompatActivity implements BaseGameView.Host
         if (def == null) { finish(); return; }
 
         FrameLayout root = new FrameLayout(this);
-        root.setBackgroundColor(def.dark ? 0xFF14123A : 0xFFC9F0E1);
+        root.addView(new PlaygroundViews.SceneBgView(this, themeFor(def.id)),
+            new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
 
         LinearLayout col = new LinearLayout(this);
         col.setOrientation(LinearLayout.VERTICAL);
@@ -178,54 +179,60 @@ public class GameActivity extends AppCompatActivity implements BaseGameView.Host
 
         PlaygroundViews.CiciView cici = new PlaygroundViews.CiciView(this);
         cici.wave();
-        int ciciSz = UiHelper.dp(this, 86);
-        card.addView(cici, new LinearLayout.LayoutParams(ciciSz, ciciSz));
+        int cSz = UiHelper.dp(this, 96);
+        card.addView(cici, new LinearLayout.LayoutParams(cSz, cSz));
 
-        TextView stars = new TextView(this);
-        stars.setText("⭐⭐⭐");
-        stars.setTextSize(34);
-        card.addView(stars);
+        LinearLayout starsRow = new LinearLayout(this);
+        starsRow.setOrientation(LinearLayout.HORIZONTAL);
+        starsRow.setGravity(Gravity.CENTER);
+        int stSz = UiHelper.dp(this, 44);
+        for (int i = 0; i < 3; i++) {
+            SpriteView sv = new SpriteView(this, "bintang");
+            LinearLayout.LayoutParams sl = new LinearLayout.LayoutParams(stSz, stSz);
+            sl.setMargins(UiHelper.dp(this, 4), 0, UiHelper.dp(this, 4), 0);
+            starsRow.addView(sv, sl);
+        }
+        card.addView(starsRow);
 
         TextView msg = new TextView(this);
         String[] praises = {"Hebat!", "Pintar!", "Horee!", "Keren!", "Juara!"};
         msg.setText(praises[rnd.nextInt(praises.length)]);
-        msg.setTextSize(24);
+        msg.setTextSize(26);
         msg.setTextColor(0xFF2A2140);
         msg.setTypeface(null, Typeface.BOLD);
         card.addView(msg);
 
         LinearLayout stkBadge = new LinearLayout(this);
         stkBadge.setOrientation(LinearLayout.HORIZONTAL);
-        stkBadge.setGravity(Gravity.CENTER);
-        stkBadge.setPadding(UiHelper.dp(this, 12), UiHelper.dp(this, 6), UiHelper.dp(this, 14), UiHelper.dp(this, 6));
-        stkBadge.setBackground(UiHelper.toyBox(this, 0xFFFFD23F, 99, 3));
-        SpriteView stkSprite = new SpriteView(this, stk.key);
-        stkSprite.setMood(CartoonArt.Mood.HAPPY);
-        int stkSz = UiHelper.dp(this, 42);
-        stkBadge.addView(stkSprite, new LinearLayout.LayoutParams(stkSz, stkSz));
-
-        TextView stkView = new TextView(this);
-        stkView.setText("  " + stk.name + " • " + (isNew ? "Stiker baru!" : "Stiker!"));
-        stkView.setTextSize(16);
-        stkView.setTextColor(0xFF2A2140);
-        stkView.setTypeface(null, Typeface.BOLD);
-        stkBadge.addView(stkView);
+        stkBadge.setGravity(Gravity.CENTER_VERTICAL);
+        stkBadge.setPadding(UiHelper.dp(this, 14), UiHelper.dp(this, 6), UiHelper.dp(this, 16), UiHelper.dp(this, 6));
+        stkBadge.setBackground(UiHelper.toyBox3D(this, 0xFFFFD23F, 99, 3, 4));
+        SpriteView stkSp = new SpriteView(this, stkKey);
+        stkBadge.addView(stkSp, new LinearLayout.LayoutParams(UiHelper.dp(this, 42), UiHelper.dp(this, 42)));
+        TextView stkTxt = new TextView(this);
+        stkTxt.setText("  " + (isNew ? "Stiker baru!" : "Stiker!"));
+        stkTxt.setTextSize(17);
+        stkTxt.setTextColor(0xFF2A2140);
+        stkTxt.setTypeface(null, Typeface.BOLD);
+        stkBadge.addView(stkTxt);
         LinearLayout.LayoutParams slp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         slp.topMargin = UiHelper.dp(this, 10);
         card.addView(stkBadge, slp);
 
         Button nextBtn = new Button(this);
-        nextBtn.setText("▶ Main Lagi");
+        nextBtn.setText("▶  Main Lagi");
         nextBtn.setAllCaps(false);
-        nextBtn.setTextSize(18);
+        nextBtn.setTextSize(20);
         nextBtn.setTextColor(0xFF2A2140);
         nextBtn.setTypeface(null, Typeface.BOLD);
-        nextBtn.setBackground(UiHelper.toyBox(this, 0xFF6CC56F, 99, 4));
+        nextBtn.setBackground(UiHelper.toyBox3D(this, 0xFF6CC56F, 99, 4, 7));
+        nextBtn.setPadding(UiHelper.dp(this, 30), UiHelper.dp(this, 12), UiHelper.dp(this, 30), UiHelper.dp(this, 14));
         LinearLayout.LayoutParams nlp = new LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        nlp.topMargin = UiHelper.dp(this, 16);
+        nlp.topMargin = UiHelper.dp(this, 18);
         card.addView(nextBtn, nlp);
+        UiHelper.bounce(nextBtn);
 
         AlertDialog dlg = new AlertDialog.Builder(this).setView(card).setCancelable(false).create();
         if (dlg.getWindow() != null) dlg.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
@@ -240,6 +247,16 @@ public class GameActivity extends AppCompatActivity implements BaseGameView.Host
         nextBtn.setOnClickListener(v -> { sfx.tap(); closeDlg.run(); });
         dlg.show();
         handler.postDelayed(closeDlg, 5500);
+    }
+
+    private String themeFor(String id) {
+        switch (id) {
+            case "tangkap": case "kembang": case "roket": return "night";
+            case "gelembung": case "pancing": return "sea";
+            case "panen": case "makan": case "sembunyi": case "rumah": case "dokter": return "garden";
+            case "balon": case "pelangi": case "jalan": case "kereta": case "profesi": return "sky";
+            default: return "room";
+        }
     }
 
     @Override

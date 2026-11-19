@@ -273,4 +273,138 @@ public class PlaygroundViews {
             c.drawOval(new RectF(cx - rx * 0.55f, cy - ry * 0.65f, cx - rx * 0.15f, cy - ry * 0.15f), p);
         }
     }
+
+    /** Glossy translucent soap bubble for GelembungGame */
+    public static class BubbleView extends android.widget.FrameLayout {
+        private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final Paint st = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        public BubbleView(Context c, String animalKey) {
+            super(c);
+            setWillNotDraw(false);
+            st.setStyle(Paint.Style.STROKE);
+            st.setColor(0xEEFFFFFF);
+            st.setStrokeWidth(UiHelper.dp(c, 3));
+            int pad = UiHelper.dp(c, 14);
+            setPadding(pad, pad, pad, pad);
+            addView(new SpriteView(c, animalKey), new LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+        }
+
+        @Override
+        protected void onDraw(Canvas c) {
+            float w = getWidth(), h = getHeight(), r = Math.min(w, h) / 2f - UiHelper.dp(getContext(), 3);
+            p.setColor(0x44BDF0FF);
+            c.drawCircle(w / 2f, h / 2f, r, p);
+            c.drawCircle(w / 2f, h / 2f, r, st);
+            p.setColor(0xAAFFFFFF);
+            c.drawCircle(w * 0.34f, h * 0.30f, r * 0.18f, p);
+            super.onDraw(c);
+        }
+    }
+
+    /** Rich animated themed backgrounds for all 32 games */
+    public static class SceneBgView extends View {
+        private final String theme; // "sky", "garden", "sea", "night", "room"
+        private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final Path path = new Path();
+        private final long t0 = System.currentTimeMillis();
+
+        public SceneBgView(Context c, String theme) {
+            super(c);
+            this.theme = theme;
+        }
+
+        @Override
+        protected void onDraw(Canvas c) {
+            int w = getWidth(), h = getHeight();
+            if (w == 0 || h == 0) return;
+            float sec = (System.currentTimeMillis() - t0) / 1000f;
+
+            if ("night".equals(theme)) {
+                p.setShader(new LinearGradient(0, 0, 0, h,
+                    new int[]{0xFF141036, 0xFF282066, 0xFF3E318C}, null, Shader.TileMode.CLAMP));
+                c.drawRect(0, 0, w, h, p);
+                p.setShader(null);
+                // Twinkling stars
+                for (int i = 0; i < 24; i++) {
+                    float sx = ((i * 137) % 97 + 1.5f) * w / 100f;
+                    float sy = ((i * 73) % 78 + 3f) * h / 100f;
+                    float al = 0.35f + 0.65f * (float) Math.abs(Math.sin(sec * 2.2f + i));
+                    p.setColor(((int) (al * 255) << 24) | 0x00FFF6B0);
+                    c.drawCircle(sx, sy, 3.5f + (i % 3) * 1.5f, p);
+                }
+                // Crescent moon
+                p.setColor(0xFFFFF3B0);
+                c.drawCircle(w * 0.82f, h * 0.14f, Math.min(w, h) * 0.08f, p);
+                p.setColor(0xFF1C174A);
+                c.drawCircle(w * 0.85f, h * 0.12f, Math.min(w, h) * 0.07f, p);
+            } else if ("sea".equals(theme)) {
+                p.setShader(new LinearGradient(0, 0, 0, h,
+                    new int[]{0xFF7FDDF6, 0xFF3FA0D8, 0xFF2374AB}, null, Shader.TileMode.CLAMP));
+                c.drawRect(0, 0, w, h, p);
+                p.setShader(null);
+                // Rising ambient bubbles
+                p.setColor(0x44FFFFFF);
+                for (int i = 0; i < 10; i++) {
+                    float bx = ((i * 97) % 90 + 5f) * w / 100f;
+                    float by = h - (((sec * 35f + i * 90f) % (h + 60f)) - 30f);
+                    c.drawCircle(bx, by, 8f + (i % 4) * 4f, p);
+                }
+                // Sandy seabed
+                p.setColor(0xFFF3D79B);
+                path.reset();
+                path.moveTo(0, h * 0.88f);
+                path.quadTo(w * 0.5f, h * 0.82f, w, h * 0.88f);
+                path.lineTo(w, h);
+                path.lineTo(0, h);
+                path.close();
+                c.drawPath(path, p);
+            } else if ("room".equals(theme)) {
+                p.setShader(new LinearGradient(0, 0, 0, h * 0.62f,
+                    new int[]{0xFFFFF3D9, 0xFFFFE5B8}, null, Shader.TileMode.CLAMP));
+                c.drawRect(0, 0, w, h * 0.62f, p);
+                p.setShader(null);
+                p.setColor(0xFFE2A96B);
+                c.drawRect(0, h * 0.62f, w, h, p);
+                p.setColor(0x222A2140);
+                for (int i = 1; i < 6; i++) {
+                    float lx = w * i / 6f;
+                    c.drawRect(lx, h * 0.62f, lx + 4f, h, p);
+                }
+            } else if ("garden".equals(theme)) {
+                p.setShader(new LinearGradient(0, 0, 0, h * 0.48f,
+                    new int[]{0xFF8BE0FF, 0xFFD9F5FF}, null, Shader.TileMode.CLAMP));
+                c.drawRect(0, 0, w, h * 0.48f, p);
+                p.setShader(null);
+                p.setColor(0xFFFFD23F);
+                c.drawCircle(w * 0.86f, h * 0.11f, Math.min(w, h) * 0.08f, p);
+                p.setColor(0xFF9AD77A);
+                c.drawRect(0, h * 0.42f, w, h, p);
+                p.setColor(0xFF82CA62);
+                path.reset();
+                path.moveTo(0, h * 0.45f);
+                path.quadTo(w * 0.5f, h * 0.36f, w, h * 0.45f);
+                path.lineTo(w, h);
+                path.lineTo(0, h);
+                path.close();
+                c.drawPath(path, p);
+            } else { // "sky"
+                p.setShader(new LinearGradient(0, 0, 0, h,
+                    new int[]{0xFF7FD0FF, 0xFFBFE8FF, 0xFFEAF8FF}, null, Shader.TileMode.CLAMP));
+                c.drawRect(0, 0, w, h, p);
+                p.setShader(null);
+                p.setColor(0xF0FFFFFF);
+                for (int i = 0; i < 3; i++) {
+                    float cx = (((0.15f + i * 0.35f) + sec * (0.015f + i * 0.004f)) % 1.3f - 0.15f) * w;
+                    float cy = (0.10f + i * 0.11f) * h;
+                    float r = Math.min(w, h) * 0.06f;
+                    c.drawRoundRect(new RectF(cx - r * 1.6f, cy - r * 0.5f, cx + r * 1.6f, cy + r * 0.6f), r, r, p);
+                    c.drawCircle(cx - r * 0.4f, cy - r * 0.4f, r * 0.7f, p);
+                    c.drawCircle(cx + r * 0.5f, cy - r * 0.25f, r * 0.55f, p);
+                }
+            }
+            postInvalidateOnAnimation();
+        }
+    }
 }
