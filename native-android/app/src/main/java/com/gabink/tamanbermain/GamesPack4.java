@@ -463,7 +463,7 @@ public class GamesPack4 {
                         invalidate();
                         host.sfx().pop();
                         host.particles().burst(x, y, new int[]{activeCol, 0xFFFFFFFF}, 18);
-                        if (painted >= 4) handler.postDelayed(() -> host.celebrate(this::nextRound, "warnai_done"), 800);
+                        if (painted >= 4) handler.postDelayed(() -> host.celebrate(WarnaiGame.this::nextRound, "warnai_done"), 800);
                         return true;
                     }
                     return super.onTouchEvent(ev);
