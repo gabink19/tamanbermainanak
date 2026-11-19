@@ -1,0 +1,11 @@
+{
+  "appId": "com.gabink.tamanbermain",
+  "appName": "Taman Bermain Si Kecil",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "taman-bermain-si-kecil",
+  "version": "1.0.0",
+  "description": "Taman Bermain Si Kecil - Game edukasi anak interaktif berbahasa Indonesia",
+  "scripts": {
+    "prepare-web": "rm -rf www && mkdir -p www && cp index.html data.js www/ && cp -r sfx-real suara-65 suara-75 suara-85 suara-100 www/"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2"
+  }
+}
