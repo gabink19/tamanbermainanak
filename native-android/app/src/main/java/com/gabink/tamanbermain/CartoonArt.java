@@ -155,6 +155,7 @@ public class CartoonArt {
             case "pelangi": drawRainbowIcon(c, f, st, bob); break;
             case "puzzle": drawPuzzleIcon(c, f, st, bob); break;
             case "kuas": drawBrushIcon(c, f, st, bob); break;
+            case "dokter_hewan": drawVetIcon(c, f, st, bob, blink); break;
             default: drawGenericBadge(c, f, st, bob, 0xFFFFD23F); break;
         }
         c.restore();
@@ -1173,5 +1174,44 @@ public class CartoonArt {
         f.setColor(0xFFE63946); c.drawCircle(42, 52, 8, f);
         f.setColor(0xFF4CC9F0); c.drawCircle(64, 46, 8, f);
         f.setColor(0xFF6CC56F); c.drawCircle(76, 68, 8, f);
+    }
+
+    private static void drawVetIcon(Canvas c, Paint f, Paint st, float bob, boolean blink) {
+        c.translate(0, bob);
+        // Cat ears
+        Path earL = new Path(); earL.moveTo(34, 40); earL.lineTo(32, 16); earL.lineTo(52, 28); earL.close();
+        Path earR = new Path(); earR.moveTo(86, 40); earR.lineTo(88, 16); earR.lineTo(68, 28); earR.close();
+        f.setColor(0xFFFF9F1C);
+        c.drawPath(earL, f); c.drawPath(earL, st);
+        c.drawPath(earR, f); c.drawPath(earR, st);
+        // White doctor coat body
+        f.setColor(0xFFFFFFFF);
+        c.drawRoundRect(new RectF(26, 68, 94, 110), 16, 16, f);
+        c.drawRoundRect(new RectF(26, 68, 94, 110), 16, 16, st);
+        // Coat lapels & blue shirt V-neck
+        f.setColor(0xFF4CC9F0);
+        Path vneck = new Path(); vneck.moveTo(46, 68); vneck.lineTo(74, 68); vneck.lineTo(60, 92); vneck.close();
+        c.drawPath(vneck, f); c.drawPath(vneck, st);
+        // Red cross badge on coat
+        f.setColor(0xFFE63946);
+        c.drawRect(72, 82, 86, 88, f);
+        c.drawRect(76, 78, 82, 92, f);
+        // Stethoscope around neck
+        c.drawArc(new RectF(40, 62, 80, 94), 10, 160, false, st);
+        f.setColor(0xFF4CC9F0);
+        c.drawCircle(44, 88, 5, f); c.drawCircle(44, 88, 5, st);
+        // Cat head
+        f.setColor(0xFFFF9F1C);
+        c.drawOval(new RectF(32, 24, 88, 72), f); c.drawOval(new RectF(32, 24, 88, 72), st);
+        // Doctor head mirror band
+        c.drawLine(34, 34, 86, 34, st);
+        f.setColor(0xFFE6FAFF);
+        c.drawCircle(60, 28, 9, f); c.drawCircle(60, 28, 9, st);
+        // Face
+        f.setColor(0xFFFFE5B4);
+        c.drawOval(new RectF(44, 50, 76, 68), f);
+        f.setColor(0xFFFF5D8F);
+        c.drawCircle(60, 56, 3.5f, f);
+        drawEyes(c, f, st, 48, 72, 46, blink, false);
     }
 }

@@ -300,7 +300,7 @@ public class HomeActivity extends AppCompatActivity {
             case "panen": return "wortel";
             case "sortir": return "keranjang";
             case "makan": return "kelinci";
-            case "dokter": return "stetoskop";
+            case "dokter": return "dokter_hewan";
             case "dandan": return "mahkota";
             case "kereta": return "kereta";
             case "jalan": return "mobil";
