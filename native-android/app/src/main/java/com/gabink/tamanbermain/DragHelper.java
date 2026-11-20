@@ -3,6 +3,7 @@ package com.gabink.tamanbermain;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import java.util.List;
 
 /**
@@ -29,7 +30,12 @@ public class DragHelper {
                     start[0] = ev.getRawX();
                     start[1] = ev.getRawY();
                     moved[0] = false;
-                    v.bringToFront();
+                    // Raise visually with Z without calling bringToFront(), which reorders LinearLayout children
+                    if (v.getParent() instanceof ViewGroup) {
+                        ((ViewGroup) v.getParent()).setClipChildren(false);
+                        ((ViewGroup) v.getParent()).setClipToPadding(false);
+                    }
+                    v.setZ(UiHelper.dp(v.getContext(), 16));
                     v.animate().scaleX(1.16f).scaleY(1.16f).setDuration(100).start();
                     if (sfx != null) sfx.pick();
                     return true;
@@ -49,6 +55,7 @@ public class DragHelper {
 
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
+                    v.setZ(0f);
                     for (View t : targets) {
                         t.setScaleX(1f);
                         t.setScaleY(1f);
