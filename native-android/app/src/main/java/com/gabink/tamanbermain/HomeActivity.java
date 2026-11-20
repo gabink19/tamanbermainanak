@@ -222,9 +222,8 @@ public class HomeActivity extends AppCompatActivity {
         for (GameData.GameDef g : list) {
             FrameLayout card = new FrameLayout(this);
             card.setBackground(UiHelper.toyBox3D(this, g.color, 26, 3, 6));
-            card.setRotation((tileIdx++ % 2 == 0) ? -1.3f : 1.3f);
             int cp = UiHelper.dp(this, 10);
-            card.setPadding(cp, cp, cp, UiHelper.dp(this, 14));
+            card.setPadding(cp, UiHelper.dp(this, 10), cp, UiHelper.dp(this, 14));
 
             LinearLayout inner = new LinearLayout(this);
             inner.setOrientation(LinearLayout.VERTICAL);
@@ -241,22 +240,25 @@ public class HomeActivity extends AppCompatActivity {
             int badgeSz = UiHelper.dp(this, 82);
             LinearLayout.LayoutParams ilp = new LinearLayout.LayoutParams(badgeSz, badgeSz);
             ilp.topMargin = UiHelper.dp(this, 4);
-            ilp.bottomMargin = UiHelper.dp(this, 6);
+            ilp.bottomMargin = UiHelper.dp(this, 8);
             inner.addView(badge, ilp);
 
             TextView name = new TextView(this);
             name.setText(g.name);
-            name.setTextSize(16);
+            name.setTextSize(15);
             name.setTextColor(0xFF2A2140);
             name.setTypeface(null, Typeface.BOLD);
             name.setGravity(Gravity.CENTER);
+            name.setMaxLines(2);
             inner.addView(name);
 
             TextView desc = new TextView(this);
             desc.setText(g.desc);
-            desc.setTextSize(12);
+            desc.setTextSize(11.5f);
             desc.setTextColor(0xCC2A2140);
             desc.setGravity(Gravity.CENTER);
+            desc.setMaxLines(2);
+            desc.setPadding(UiHelper.dp(this, 4), UiHelper.dp(this, 2), UiHelper.dp(this, 4), 0);
             inner.addView(desc);
 
             card.addView(inner);
@@ -296,35 +298,35 @@ public class HomeActivity extends AppCompatActivity {
         switch (id) {
             case "profesi": return "pemadam";
             case "panen": return "wortel";
-            case "sortir": return "apel";
+            case "sortir": return "keranjang";
             case "makan": return "kelinci";
-            case "dokter": return "kucing";
-            case "dandan": return "panda";
+            case "dokter": return "stetoskop";
+            case "dandan": return "mahkota";
             case "kereta": return "kereta";
             case "jalan": return "mobil";
-            case "kue": return "stroberi";
-            case "hitung": return "jeruk";
-            case "bentuk": return "anakayam";
+            case "kue": return "kue";
+            case "hitung": return "apel";
+            case "bentuk": return "bintang";
             case "besarkecil": return "beruang";
             case "rumah": return "sapi";
             case "bayangan": return "gajah";
-            case "puzzle": return "singa";
-            case "mandi": return "anjing";
-            case "gigi": return "harimau";
+            case "puzzle": return "puzzle";
+            case "mandi": return "spons";
+            case "gigi": return "gigi";
             case "pancing": return "ikan";
-            case "pasangan": return "katak";
-            case "warnai": return "bebek";
-            case "balon": return "monyet";
+            case "pasangan": return "tanda_tanya";
+            case "warnai": return "kuas";
+            case "balon": return "balon";
             case "gelembung": return "ikanhias";
-            case "kembang": return "roket";
-            case "piano": return "pesawat";
-            case "musik": return "bus";
-            case "cilukba": return "domba";
-            case "telepon": return "tikus";
-            case "tangkap": return "paus";
-            case "es": return "semangka";
-            case "sembunyi": return "kurakura";
-            case "pelangi": return "gurita";
+            case "kembang": return "kembang";
+            case "piano": return "piano";
+            case "musik": return "drum";
+            case "cilukba": return "selimut";
+            case "telepon": return "telepon";
+            case "tangkap": return "bintang";
+            case "es": return "eskrim";
+            case "sembunyi": return "semak";
+            case "pelangi": return "pelangi";
             case "roket": return "roket";
             default: return "kucing";
         }

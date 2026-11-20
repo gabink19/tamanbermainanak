@@ -214,6 +214,7 @@ public class GamesPack2 {
             row.setGravity(Gravity.CENTER);
             row.setPadding(0, UiHelper.dp(getContext(), 28), 0, 0);
 
+            List<View> aniTargets = Collections.singletonList(aniView);
             for (String fk : opts) {
                 FrameLayout fb = new FrameLayout(getContext());
                 fb.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFAF0, 24, 3, 5));
@@ -224,19 +225,20 @@ public class GamesPack2 {
                 int sz = UiHelper.dp(getContext(), 92);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
-                fb.setOnClickListener(v -> {
-                    if (fk.equals(goodFood)) {
+                DragHelper.attach(fb, aniTargets, host.sfx(), new DragHelper.Listener() {
+                    @Override public boolean accept(int targetIdx) { return fk.equals(goodFood); }
+                    @Override public void onDrop(int targetIdx) {
+                        fb.setVisibility(INVISIBLE);
                         UiHelper.bounce(aniView);
+                        host.sfx().chomp();
                         host.sfx().good();
                         host.sfx().playReal(curAnimal);
                         host.sfx().playVoice("nyam_" + curAnimal);
                         burstView(aniView, null, 28);
-                        handler.postDelayed(() -> host.celebrate(this::nextRound, null), 1200);
-                    } else {
-                        UiHelper.shake(fb);
-                        host.sfx().wrong();
-                        host.sfx().playVoice("ups");
+                        handler.postDelayed(() -> host.celebrate(MakanGame.this::nextRound, null), 1200);
                     }
+                    @Override public void onTap() { UiHelper.bounce(fb); host.sfx().playVoice("n_" + fk); }
+                    @Override public void onFail() { UiHelper.shake(aniView); host.sfx().wrong(); host.sfx().playVoice("ups"); }
                 });
                 row.addView(fb, lp);
             }
@@ -279,6 +281,7 @@ public class GamesPack2 {
             row.setGravity(Gravity.CENTER);
             row.setPadding(0, 0, 0, UiHelper.dp(getContext(), 32));
 
+            List<View> crateTargets = Collections.singletonList(crate);
             for (int i = 0; i < n; i++) {
                 GameData.Item it = vegs.get(i);
                 FrameLayout fv = new FrameLayout(getContext());
@@ -290,17 +293,19 @@ public class GamesPack2 {
                 int vsz = UiHelper.dp(getContext(), 74);
                 LinearLayout.LayoutParams vlp = new LinearLayout.LayoutParams(vsz, vsz);
                 vlp.setMargins(UiHelper.dp(getContext(), 5), 0, UiHelper.dp(getContext(), 5), 0);
-                fv.setOnClickListener(v -> {
-                    if (fv.getVisibility() != VISIBLE) return;
-                    fv.setVisibility(INVISIBLE);
-                    host.sfx().pop();
-                    host.sfx().playVoice("n_" + it.key);
-                    UiHelper.bounce(crate);
-                    burstView(crate, null, 18);
-                    left--;
-                    if (left == 0) {
-                        handler.postDelayed(() -> host.celebrate(this::nextRound, "panen_done"), 700);
+                DragHelper.attach(fv, crateTargets, host.sfx(), new DragHelper.Listener() {
+                    @Override public boolean accept(int targetIdx) { return true; }
+                    @Override public void onDrop(int targetIdx) {
+                        fv.setVisibility(INVISIBLE);
+                        host.sfx().plop();
+                        host.sfx().playVoice("n_" + it.key);
+                        UiHelper.bounce(crate);
+                        burstView(crate, null, 18);
+                        left--;
+                        if (left == 0) handler.postDelayed(() -> host.celebrate(PanenGame.this::nextRound, "panen_done"), 700);
                     }
+                    @Override public void onTap() { UiHelper.bounce(fv); host.sfx().playVoice("n_" + it.key); }
+                    @Override public void onFail() {}
                 });
                 row.addView(fv, vlp);
             }

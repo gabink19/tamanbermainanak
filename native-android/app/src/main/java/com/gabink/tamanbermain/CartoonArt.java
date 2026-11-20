@@ -72,6 +72,15 @@ public class CartoonArt {
             case "domba": case "kambing": drawSheep(c, f, st, bob, blink, silhouette); break;
             case "beruang": drawBear(c, f, st, bob, blink, silhouette); break;
             case "tikus": drawMouse(c, f, st, bob, blink, silhouette); break;
+            case "jerapah": drawGiraffe(c, f, st, bob, blink, silhouette); break;
+            case "zebra": drawZebra(c, f, st, bob, blink, silhouette); break;
+            case "kuda": drawHorse(c, f, st, bob, blink, silhouette); break;
+            case "burung": drawBird(c, f, st, sec, blink, silhouette); break;
+            case "burunghantu": drawOwl(c, f, st, bob, blink, silhouette); break;
+            case "lebah": drawBee(c, f, st, sec, blink, silhouette); break;
+            case "bayi": drawBaby(c, f, st, bob, blink, silhouette); break;
+            case "cumi": drawSquid(c, f, st, sec, silhouette); break;
+            case "udang": drawShrimp(c, f, st, bob, silhouette); break;
             case "ikan": case "ikanhias": case "hiu": case "buntal": drawFish(c, f, st, sec, key.equals("ikanhias") ? 0xFFFF8C1A : 0xFF4CC9F0, silhouette); break;
             case "gurita": drawOctopus(c, f, st, sec, silhouette); break;
             case "kepiting": drawCrab(c, f, st, sec, silhouette); break;
@@ -139,6 +148,13 @@ public class CartoonArt {
             case "selimut": drawBlanket(c, f, st, bob); break;
             case "tanda_tanya": drawQuestion(c, f, st, bob); break;
             case "keranjang": drawBasket(c, f, st, bob); break;
+            case "balon": drawBalloonIcon(c, f, st, bob); break;
+            case "kembang": drawFireworkIcon(c, f, st, sec); break;
+            case "piano": drawPianoIcon(c, f, st, bob); break;
+            case "telepon": drawPhoneIcon(c, f, st, bob); break;
+            case "pelangi": drawRainbowIcon(c, f, st, bob); break;
+            case "puzzle": drawPuzzleIcon(c, f, st, bob); break;
+            case "kuas": drawBrushIcon(c, f, st, bob); break;
             default: drawGenericBadge(c, f, st, bob, 0xFFFFD23F); break;
         }
         c.restore();
@@ -971,5 +987,191 @@ public class CartoonArt {
         f.setColor(0xFFD39B5C);
         Path p = new Path(); p.moveTo(16, 46); p.lineTo(104, 46); p.lineTo(90, 98); p.lineTo(30, 98); p.close();
         c.drawPath(p, f); c.drawPath(p, st);
+    }
+
+    private static void drawGiraffe(Canvas c, Paint f, Paint st, float bob, boolean blink, boolean sil) {
+        c.translate(0, bob);
+        f.setColor(0xFFFFD23F);
+        c.drawRoundRect(new RectF(46, 54, 74, 108), 10, 10, f); c.drawRoundRect(new RectF(46, 54, 74, 108), 10, 10, st);
+        c.drawOval(new RectF(36, 14, 50, 32), f); c.drawOval(new RectF(36, 14, 50, 32), st);
+        c.drawOval(new RectF(70, 14, 84, 32), f); c.drawOval(new RectF(70, 14, 84, 32), st);
+        c.drawOval(new RectF(32, 24, 88, 72), f); c.drawOval(new RectF(32, 24, 88, 72), st);
+        if (!sil) {
+            f.setColor(0xFFD96B27);
+            c.drawCircle(54, 80, 6, f); c.drawCircle(64, 96, 5, f);
+            f.setColor(0xFFFFE5B4);
+            c.drawOval(new RectF(42, 48, 78, 70), f);
+        }
+        drawEyes(c, f, st, 47, 73, 40, blink, sil);
+    }
+
+    private static void drawZebra(Canvas c, Paint f, Paint st, float bob, boolean blink, boolean sil) {
+        c.translate(0, bob);
+        f.setColor(0xFFFFFFFF);
+        c.drawOval(new RectF(24, 24, 96, 100), f); c.drawOval(new RectF(24, 24, 96, 100), st);
+        if (!sil) {
+            c.drawLine(46, 26, 54, 42, st); c.drawLine(74, 26, 66, 42, st);
+            c.drawLine(28, 56, 42, 60, st); c.drawLine(92, 56, 78, 60, st);
+            f.setColor(0xFFCFD8E3);
+            c.drawOval(new RectF(40, 66, 80, 96), f);
+        }
+        drawEyes(c, f, st, 46, 74, 52, blink, sil);
+    }
+
+    private static void drawHorse(Canvas c, Paint f, Paint st, float bob, boolean blink, boolean sil) {
+        c.translate(0, bob);
+        f.setColor(0xFF9E6B43);
+        Path earL = new Path(); earL.moveTo(30, 42); earL.lineTo(28, 16); earL.lineTo(48, 30); earL.close();
+        Path earR = new Path(); earR.moveTo(90, 42); earR.lineTo(92, 16); earR.lineTo(72, 30); earR.close();
+        c.drawPath(earL, f); c.drawPath(earL, st); c.drawPath(earR, f); c.drawPath(earR, st);
+        c.drawOval(new RectF(24, 26, 96, 102), f); c.drawOval(new RectF(24, 26, 96, 102), st);
+        if (!sil) {
+            f.setColor(0xFFD9A066);
+            c.drawOval(new RectF(38, 64, 82, 98), f);
+        }
+        drawEyes(c, f, st, 45, 75, 52, blink, sil);
+    }
+
+    private static void drawBird(Canvas c, Paint f, Paint st, float sec, boolean blink, boolean sil) {
+        c.translate(0, (float) Math.sin(sec * 4f) * 3f);
+        f.setColor(0xFF4CC9F0);
+        c.drawOval(new RectF(22, 26, 94, 98), f); c.drawOval(new RectF(22, 26, 94, 98), st);
+        if (!sil) {
+            f.setColor(0xFFFFD23F);
+            Path beak = new Path(); beak.moveTo(86, 56); beak.lineTo(108, 62); beak.lineTo(86, 68); beak.close();
+            c.drawPath(beak, f); c.drawPath(beak, st);
+            f.setColor(0xFF2F80ED);
+            c.drawOval(new RectF(30, 56, 62, 82), f); c.drawOval(new RectF(30, 56, 62, 82), st);
+        }
+        drawEyes(c, f, st, 72, 72, 48, blink, sil);
+    }
+
+    private static void drawOwl(Canvas c, Paint f, Paint st, float bob, boolean blink, boolean sil) {
+        c.translate(0, bob);
+        f.setColor(0xFF8B5A2B);
+        c.drawOval(new RectF(22, 22, 98, 102), f); c.drawOval(new RectF(22, 22, 98, 102), st);
+        if (!sil) {
+            f.setColor(0xFFFFFFFF);
+            c.drawCircle(44, 50, 14, f); c.drawCircle(44, 50, 14, st);
+            c.drawCircle(76, 50, 14, f); c.drawCircle(76, 50, 14, st);
+            f.setColor(0xFFFF9F1C);
+            Path beak = new Path(); beak.moveTo(54, 58); beak.lineTo(66, 58); beak.lineTo(60, 70); beak.close();
+            c.drawPath(beak, f);
+        }
+        drawEyes(c, f, st, 44, 76, 50, blink, sil);
+    }
+
+    private static void drawBee(Canvas c, Paint f, Paint st, float sec, boolean blink, boolean sil) {
+        c.translate(0, (float) Math.sin(sec * 8f) * 3f);
+        f.setColor(0xDDE6FAFF);
+        c.drawOval(new RectF(28, 16, 58, 48), f); c.drawOval(new RectF(28, 16, 58, 48), st);
+        c.drawOval(new RectF(62, 16, 92, 48), f); c.drawOval(new RectF(62, 16, 92, 48), st);
+        f.setColor(0xFFFFD23F);
+        c.drawOval(new RectF(22, 38, 98, 96), f); c.drawOval(new RectF(22, 38, 98, 96), st);
+        if (!sil) {
+            c.drawLine(46, 40, 46, 94, st); c.drawLine(66, 40, 66, 94, st);
+        }
+        drawEyes(c, f, st, 80, 80, 60, blink, sil);
+    }
+
+    private static void drawBaby(Canvas c, Paint f, Paint st, float bob, boolean blink, boolean sil) {
+        c.translate(0, bob);
+        f.setColor(0xFFFFDFC4);
+        c.drawCircle(60, 62, 38, f); c.drawCircle(60, 62, 38, st);
+        if (!sil) {
+            f.setColor(0xFFFF5D8F);
+            c.drawCircle(60, 78, 8, f);
+            c.drawArc(new RectF(52, 16, 68, 32), 180, 180, false, st);
+        }
+        drawEyes(c, f, st, 45, 75, 56, blink, sil);
+    }
+
+    private static void drawSquid(Canvas c, Paint f, Paint st, float sec, boolean sil) {
+        c.translate(0, (float) Math.sin(sec * 3f) * 4f);
+        f.setColor(0xFFFF5D8F);
+        Path dome = new Path(); dome.moveTo(60, 14); dome.lineTo(92, 66); dome.lineTo(28, 66); dome.close();
+        c.drawPath(dome, f); c.drawPath(dome, st);
+        for (int i = 0; i < 4; i++) {
+            float x = 34 + i * 17;
+            c.drawRoundRect(new RectF(x - 5, 64, x + 5, 104), 5, 5, f);
+            c.drawRoundRect(new RectF(x - 5, 64, x + 5, 104), 5, 5, st);
+        }
+        drawEyes(c, f, st, 48, 72, 52, false, sil);
+    }
+
+    private static void drawShrimp(Canvas c, Paint f, Paint st, float bob, boolean sil) {
+        c.translate(0, bob);
+        f.setColor(0xFFFF8C1A);
+        c.drawArc(new RectF(22, 28, 98, 98), 200, 220, true, f);
+        c.drawArc(new RectF(22, 28, 98, 98), 200, 220, true, st);
+        drawEyes(c, f, st, 40, 40, 46, false, sil);
+    }
+
+    private static void drawBalloonIcon(Canvas c, Paint f, Paint st, float bob) {
+        c.translate(0, bob);
+        c.drawLine(60, 82, 60, 110, st);
+        f.setColor(0xFFFF5D8F);
+        c.drawOval(new RectF(28, 16, 92, 84), f); c.drawOval(new RectF(28, 16, 92, 84), st);
+        f.setColor(0x77FFFFFF); c.drawOval(new RectF(40, 28, 54, 46), f);
+    }
+
+    private static void drawFireworkIcon(Canvas c, Paint f, Paint st, float sec) {
+        int[] cols = {0xFFE63946, 0xFFFFD23F, 0xFF4CC9F0, 0xFFFF5D8F};
+        for (int i = 0; i < 8; i++) {
+            double a = i * Math.PI * 2 / 8 + sec * 0.5;
+            f.setColor(cols[i % cols.length]);
+            float x = (float) (60 + Math.cos(a) * 34), y = (float) (60 + Math.sin(a) * 34);
+            c.drawLine(60, 60, x, y, st);
+            c.drawCircle(x, y, 8, f); c.drawCircle(x, y, 8, st);
+        }
+        f.setColor(0xFFFFD23F); c.drawCircle(60, 60, 10, f);
+    }
+
+    private static void drawPianoIcon(Canvas c, Paint f, Paint st, float bob) {
+        c.translate(0, bob);
+        f.setColor(0xFFFFFFFF);
+        c.drawRoundRect(new RectF(18, 28, 102, 92), 10, 10, f); c.drawRoundRect(new RectF(18, 28, 102, 92), 10, 10, st);
+        c.drawLine(46, 28, 46, 92, st); c.drawLine(74, 28, 74, 92, st);
+        f.setColor(INK);
+        c.drawRect(38, 28, 54, 64, f); c.drawRect(66, 28, 82, 64, f);
+    }
+
+    private static void drawPhoneIcon(Canvas c, Paint f, Paint st, float bob) {
+        c.translate(0, bob);
+        f.setColor(0xFF4CC9F0);
+        c.drawRoundRect(new RectF(32, 16, 88, 104), 14, 14, f); c.drawRoundRect(new RectF(32, 16, 88, 104), 14, 14, st);
+        f.setColor(0xFFFFFFFF);
+        c.drawRoundRect(new RectF(40, 26, 80, 62), 6, 6, f);
+        f.setColor(0xFF6CC56F);
+        c.drawCircle(60, 82, 10, f);
+    }
+
+    private static void drawRainbowIcon(Canvas c, Paint f, Paint st, float bob) {
+        c.translate(0, bob);
+        Paint rp = new Paint(Paint.ANTI_ALIAS_FLAG);
+        rp.setStyle(Paint.Style.STROKE); rp.setStrokeWidth(9); rp.setStrokeCap(Paint.Cap.ROUND);
+        int[] cols = {0xFFE63946, 0xFFFFD23F, 0xFF3FB950, 0xFF2F80ED};
+        for (int i = 0; i < 4; i++) {
+            float r = 44 - i * 10;
+            rp.setColor(cols[i]);
+            c.drawArc(new RectF(60 - r, 84 - r, 60 + r, 84 + r), 180, 180, false, rp);
+        }
+    }
+
+    private static void drawPuzzleIcon(Canvas c, Paint f, Paint st, float bob) {
+        c.translate(0, bob);
+        f.setColor(0xFF4CC9F0);
+        c.drawRoundRect(new RectF(26, 32, 90, 96), 10, 10, f); c.drawRoundRect(new RectF(26, 32, 90, 96), 10, 10, st);
+        c.drawCircle(58, 28, 12, f); c.drawCircle(58, 28, 12, st);
+        c.drawCircle(94, 64, 12, f); c.drawCircle(94, 64, 12, st);
+    }
+
+    private static void drawBrushIcon(Canvas c, Paint f, Paint st, float bob) {
+        c.translate(0, bob);
+        f.setColor(0xFFFFD23F);
+        c.drawOval(new RectF(20, 28, 100, 94), f); c.drawOval(new RectF(20, 28, 100, 94), st);
+        f.setColor(0xFFE63946); c.drawCircle(42, 52, 8, f);
+        f.setColor(0xFF4CC9F0); c.drawCircle(64, 46, 8, f);
+        f.setColor(0xFF6CC56F); c.drawCircle(76, 68, 8, f);
     }
 }

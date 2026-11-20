@@ -97,27 +97,19 @@ public class GamesPack3 {
                 int sz = UiHelper.dp(getContext(), 100);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(sz, sz);
                 lp.setMargins(UiHelper.dp(getContext(), 8), 0, UiHelper.dp(getContext(), 8), 0);
-                cv.setOnClickListener(v -> {
-                    if (cv.getAlpha() < 0.5f) return;
-                    if (pickedIdx == -1) {
-                        UiHelper.bounce(cv);
-                        host.sfx().playReal(jobs[i][3]);
-                        return;
-                    }
-                    if (pickedIdx == i) {
+                DragHelper.attach(cv, pViews, host.sfx(), new DragHelper.Listener() {
+                    @Override public boolean accept(int targetIdx) { return (int) pViews.get(targetIdx).getTag() == i; }
+                    @Override public void onDrop(int targetIdx) {
                         host.sfx().good();
                         host.sfx().playReal(jobs[i][3]);
-                        burstView(cv, null, 24);
-                        cv.setAlpha(0.3f);
-                        for (TextView tv : pViews) if ((int) tv.getTag() == i) tv.setAlpha(0.3f);
-                        pickedIdx = -1;
+                        burstView(pViews.get(targetIdx), null, 24);
+                        cv.setVisibility(INVISIBLE);
+                        pViews.get(targetIdx).setAlpha(0.3f);
                         left--;
-                        if (left == 0) handler.postDelayed(() -> host.celebrate(this::nextRound, null), 900);
-                    } else {
-                        UiHelper.shake(cv);
-                        host.sfx().wrong();
-                        host.sfx().playVoice("ups");
+                        if (left == 0) handler.postDelayed(() -> host.celebrate(ProfesiGame.this::nextRound, null), 900);
                     }
+                    @Override public void onTap() { UiHelper.bounce(cv); host.sfx().playReal(jobs[i][3]); }
+                    @Override public void onFail() { host.sfx().wrong(); host.sfx().playVoice("ups"); }
                 });
                 botRow.addView(cv, lp);
             }

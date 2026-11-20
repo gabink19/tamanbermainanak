@@ -157,9 +157,20 @@ public class SoundManager {
     }
 
     public void tap() { tone(880, 880, 75, 0.18); }
+    public void pick() { tone(520, 900, 110, 0.22); }
     public void pop() { tone(500, 1200, 110, 0.25); }
+    public void plop() { tone(300, 120, 160, 0.28); noise(50, 0.14); }
     public void boing() { tone(180, 560, 320, 0.28); }
     public void wrong() { tone(320, 200, 220, 0.22); }
+    public void chomp() { for (int i = 0; i < 3; i++) main.postDelayed(() -> noise(70, 0.26), i * 140L); }
+    public void drive() { tone(90, 240, 850, 0.14); }
+    public void sparkle() {
+        double[] notes = {880, 1046.5, 1318.5, 1568};
+        for (int i = 0; i < notes.length; i++) {
+            final double f = notes[i];
+            main.postDelayed(() -> tone(f, f, 200, 0.18), i * 50L);
+        }
+    }
     public void good() { tone(660, 660, 120, 0.22); main.postDelayed(() -> tone(990, 990, 200, 0.22), 90); }
     public void star(int i) { double[] f = {784, 988, 1175}; tone(f[Math.min(i, 2)], f[Math.min(i, 2)], 240, 0.24); }
     public void note(double f) { tone(f, f, 450, 0.28); }

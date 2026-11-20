@@ -43,9 +43,11 @@ public class GamesPack4 {
 
             TextView status = new TextView(getContext());
             status.setText("Ayo obati " + it.name + "!");
-            status.setTextSize(20);
+            status.setTextSize(19);
             status.setTextColor(0xFF2A2140);
             status.setTypeface(null, Typeface.BOLD);
+            status.setPadding(UiHelper.dp(getContext(), 18), UiHelper.dp(getContext(), 7), UiHelper.dp(getContext(), 18), UiHelper.dp(getContext(), 8));
+            status.setBackground(UiHelper.toyBox3D(getContext(), 0xFFFFFAF0, 99, 3, 4));
             col.addView(status);
 
             LinearLayout tools = new LinearLayout(getContext());
@@ -353,6 +355,7 @@ public class GamesPack4 {
             row.setGravity(Gravity.CENTER);
             row.setPadding(0, UiHelper.dp(getContext(), 32), 0, 0);
 
+            List<View> trainTargets = java.util.Collections.singletonList(trainBox);
             for (String ak : sel) {
                 FrameLayout tv = new FrameLayout(getContext());
                 int pad = UiHelper.dp(getContext(), 8);
@@ -362,21 +365,26 @@ public class GamesPack4 {
                 int aSz = UiHelper.dp(getContext(), 86);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(aSz, aSz);
                 lp.setMargins(UiHelper.dp(getContext(), 6), 0, UiHelper.dp(getContext(), 6), 0);
-                tv.setOnClickListener(v -> {
-                    if (tv.getVisibility() != VISIBLE) return;
-                    tv.setVisibility(INVISIBLE);
-                    boarded++;
-                    trainBox.addView(new SpriteView(getContext(), ak), new LinearLayout.LayoutParams(UiHelper.dp(getContext(), 56), UiHelper.dp(getContext(), 56)));
-                    UiHelper.bounce(trainBox);
-                    host.sfx().playReal(ak);
-                    host.sfx().playVoice("ada_" + ak);
-                    burstView(trainBox, null, 18);
-                    if (boarded >= 3) {
-                        handler.postDelayed(() -> {
-                            host.sfx().playReal("kereta");
-                            host.celebrate(this::nextRound, "kereta_done");
-                        }, 1100);
+                DragHelper.attach(tv, trainTargets, host.sfx(), new DragHelper.Listener() {
+                    @Override public boolean accept(int targetIdx) { return true; }
+                    @Override public void onDrop(int targetIdx) {
+                        tv.setVisibility(INVISIBLE);
+                        boarded++;
+                        trainBox.addView(new SpriteView(getContext(), ak), new LinearLayout.LayoutParams(UiHelper.dp(getContext(), 56), UiHelper.dp(getContext(), 56)));
+                        UiHelper.bounce(trainBox);
+                        host.sfx().plop();
+                        host.sfx().playReal(ak);
+                        host.sfx().playVoice("ada_" + ak);
+                        burstView(trainBox, null, 18);
+                        if (boarded >= 3) {
+                            handler.postDelayed(() -> {
+                                host.sfx().playReal("kereta");
+                                host.celebrate(KeretaGame.this::nextRound, "kereta_done");
+                            }, 1100);
+                        }
                     }
+                    @Override public void onTap() { UiHelper.bounce(tv); host.sfx().playReal(ak); host.sfx().playVoice("n_" + ak); }
+                    @Override public void onFail() {}
                 });
                 row.addView(tv, lp);
             }
