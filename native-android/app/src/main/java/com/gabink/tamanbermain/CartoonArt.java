@@ -14,7 +14,19 @@ import android.graphics.Shader;
  * Replaces system emojis with consistent, chunky-outlined, animated artwork.
  */
 public class CartoonArt {
-    private static final int INK = 0xFF2A2140;
+    public static final int INK = 0xFF2A2140;
+
+    public enum Mood { NORMAL, HAPPY, SAD, SURPRISED }
+
+    public static void applyBreath(Canvas c, float sec, float speed, float amp) {
+        float sy = 1f + (float) Math.sin(sec * speed) * amp;
+        float sx = 1f - (float) Math.sin(sec * speed) * (amp * 0.6f);
+        c.scale(sx, sy, 60f, 114f);
+    }
+
+    public static void draw(Canvas c, String key, float w, float h, float sec, boolean silhouette, Mood mood) {
+        draw(c, key, w, h, sec, silhouette);
+    }
 
     public static void draw(Canvas c, String key, float w, float h, float sec, boolean silhouette) {
         if (w <= 0 || h <= 0 || key == null) return;
